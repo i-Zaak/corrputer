@@ -53,6 +53,7 @@ ValueContainer* ScopeWinInput::load(char* filename)
     for (int i = 0; i < hg.PocetZaznamu; i++) {
         struct FG_s fg;
         readFG(file, &fg);
+        //printFG(&fg);
 
         readData(file,data, hg.Size);
         

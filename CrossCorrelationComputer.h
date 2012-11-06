@@ -15,7 +15,7 @@ public:
     CrossCorrelationComputer(const CrossCorrelationComputer& orig);
     virtual ~CrossCorrelationComputer();
     
-    ValueStream* computePair(int one, int two, int start, int steps, int tau);
+    float computePairValue(int one, int two, int start, int steps, int tau);
     
 private:
 

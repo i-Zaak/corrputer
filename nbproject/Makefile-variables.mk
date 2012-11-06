@@ -9,19 +9,19 @@ CND_DISTDIR=dist
 # Debug configuration
 CND_PLATFORM_Debug=GNU-Linux-x86
 CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux-x86
-CND_ARTIFACT_NAME_Debug=corcalccpp
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/corcalccpp
+CND_ARTIFACT_NAME_Debug=masterserver
+CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/masterserver
 CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux-x86/package
-CND_PACKAGE_NAME_Debug=corcalccpp.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/corcalccpp.tar
+CND_PACKAGE_NAME_Debug=masterserver.tar
+CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/masterserver.tar
 # Release configuration
 CND_PLATFORM_Release=GNU-Linux-x86
 CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux-x86
-CND_ARTIFACT_NAME_Release=corcalccpp
-CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/corcalccpp
+CND_ARTIFACT_NAME_Release=masterserver
+CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/masterserver
 CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
-CND_PACKAGE_NAME_Release=corcalccpp.tar
-CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/corcalccpp.tar
+CND_PACKAGE_NAME_Release=masterserver.tar
+CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/masterserver.tar
 #
 # include compiler specific variables
 #

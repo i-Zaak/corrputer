@@ -1,10 +1,3 @@
-/* 
- * File:   common.h
- * Author: adminuser
- *
- * Created on October 26, 2012, 3:02 PM
- */
-
 #ifndef COMMON_H
 #define	COMMON_H
 
@@ -20,8 +13,8 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <iostream>
 #include <stdexcept>
-
 
 #endif	/* COMMON_H */
 

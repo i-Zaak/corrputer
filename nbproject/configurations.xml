@@ -26,6 +26,10 @@
         <itemPath>lib/swutils.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="ValueContainer" projectFiles="true">
+        <itemPath>SourceInfo.cpp</itemPath>
+        <itemPath>SourceInfo.h</itemPath>
+        <itemPath>SourcePointInfo.cpp</itemPath>
+        <itemPath>SourcePointInfo.h</itemPath>
         <itemPath>ValueContainer.cpp</itemPath>
         <itemPath>ValueContainer.h</itemPath>
         <itemPath>ValueFrame.cpp</itemPath>
@@ -57,6 +61,16 @@
         <compilerSet>default</compilerSet>
       </toolsSet>
       <compileType>
+        <ccTool>
+          <commandLine>-fopenmp</commandLine>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <linkerLibItems>
+            <linkerOptionItem>-lboost_serialization</linkerOptionItem>
+          </linkerLibItems>
+          <commandLine>-fopenmp</commandLine>
+        </linkerTool>
       </compileType>
     </conf>
     <conf name="Release" type="1">

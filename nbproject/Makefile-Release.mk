@@ -37,12 +37,14 @@ OBJECTFILES= \
 	${OBJECTDIR}/ValueStream.o \
 	${OBJECTDIR}/ScopeWinInput.o \
 	${OBJECTDIR}/CrossCorrelationComputer.o \
-	${OBJECTDIR}/DataInputIface.o \
+	${OBJECTDIR}/SourceInfo.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/DataInputIface.o \
 	${OBJECTDIR}/CorrelationComputer.o \
 	${OBJECTDIR}/ValueFrame.o \
 	${OBJECTDIR}/lib/swutils.o \
-	${OBJECTDIR}/ValueContainer.o
+	${OBJECTDIR}/ValueContainer.o \
+	${OBJECTDIR}/SourcePointInfo.o
 
 
 # C Compiler Flags
@@ -63,11 +65,11 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corcalccpp
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corcalccpp: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corcalccpp ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/ValueStream.o: ValueStream.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -84,15 +86,20 @@ ${OBJECTDIR}/CrossCorrelationComputer.o: CrossCorrelationComputer.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/CrossCorrelationComputer.o CrossCorrelationComputer.cpp
 
-${OBJECTDIR}/DataInputIface.o: DataInputIface.cpp 
+${OBJECTDIR}/SourceInfo.o: SourceInfo.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/DataInputIface.o DataInputIface.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SourceInfo.o SourceInfo.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/DataInputIface.o: DataInputIface.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/DataInputIface.o DataInputIface.cpp
 
 ${OBJECTDIR}/CorrelationComputer.o: CorrelationComputer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -114,13 +121,18 @@ ${OBJECTDIR}/ValueContainer.o: ValueContainer.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueContainer.o ValueContainer.cpp
 
+${OBJECTDIR}/SourcePointInfo.o: SourcePointInfo.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SourcePointInfo.o SourcePointInfo.cpp
+
 # Subprojects
 .build-subprojects:
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corcalccpp
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver
 
 # Subprojects
 .clean-subprojects:

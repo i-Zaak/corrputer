@@ -10,6 +10,10 @@
 #include "ValueFrame.h"
 #include "ValueStream.h"
 
+#include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/text_iarchive.hpp>
+#include <boost/serialization/vector.hpp>
+
 class ValueContainer {
 public:
     ValueContainer(int framesCount, ValueFrame* frames);
@@ -56,9 +60,25 @@ public:
     }
     
 private:
+    /**
+     * Number of streams in this container, i.e. size of streams attribute.
+     */
     int streamsCount;
-    ValueStream** streams;
     
+    /**
+     * Pole (matice) streamu.
+     */
+    ValueStream** streams;
+   
+    friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & this->streamsCount;
+        for (int i = 0; i < this->streamsCount; i++) {
+            ar & this->streams[i];
+        }
+    }
 };
 
 #endif	/* VALUECONTAINER_H */

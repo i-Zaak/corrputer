@@ -6,7 +6,6 @@
 
 #include "CrossCorrelationComputer.h"
 
-#include <iostream>
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/mean.hpp>
@@ -22,29 +21,34 @@ CrossCorrelationComputer::CrossCorrelationComputer(const CrossCorrelationCompute
 CrossCorrelationComputer::~CrossCorrelationComputer() {
 }
 
-ValueStream* CrossCorrelationComputer::computePair(int one, int two, int start, int steps, int tau)
+float CrossCorrelationComputer::computePairValue(int one, int two, int start, int steps, int tau)
 {
     ValueStream* vsOne = this->getValues()->getStream(one);
     ValueStream* vsTwo = this->getValues()->getStream(two);
  
+    // compute statistical information about the two streams
     accumulator_set<float, stats<tag::mean, tag::variance > > accOne;
     accumulator_set<float, stats<tag::mean, tag::variance > > accTwo;
 
     int stop = start + steps;
-    for (int i = start; i < stop; i++) {
+    int i;
+    for (i = start; i < stop; i++) {
         accOne(vsOne->at(i));
         accTwo(vsTwo->at(i+tau));
     }
 
-    // Display the results ...
-    std::cout << "[" << one << ";" << two << "]" << std::endl
-            << "\tMean: \t"
-            << mean(accOne) << "; " << mean(accTwo) << std::endl
-            << "\tVariance: \t"
-            << variance(accOne) << "; " << variance(accTwo) << std::endl
-            ;
+    float meanOne = mean(accOne);
+    float meanTwo = mean(accTwo);
+    float varianceOne = variance(accOne);
+    float varianceTwo = variance(accTwo);
     
+    // compute the result based on the formula
+    accumulator_set<float, stats<tag::sum > > accSum;
+    for (i = start; i < stop; i++) {
+        float a = (vsOne->at(i) - meanOne) / varianceOne;
+        float b = (vsTwo->at(i + tau) - meanTwo) / varianceTwo;
+        accSum(a * b);
+    }
     
-    
-    return new ValueStream(100);
+    return (1.0f / steps) * sum(accSum);
 }
