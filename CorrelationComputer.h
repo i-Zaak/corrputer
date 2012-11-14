@@ -18,7 +18,7 @@ public:
     
     void setData(ValueContainer* container);
     
-    ValueContainer* computeAll();
+    virtual ValueContainer* computeAll();
     ValueStream* computePair(int one, int two);
     virtual float computePairValue(int one, int two, int start, int steps, int tau) = 0;
 
@@ -58,6 +58,12 @@ protected:
     ValueContainer* getValues() {
         return this->container;
     }
+    
+    /**
+     * Prepares values and statistics needed later on for correlation
+     * computations. Acts as a cache maintainer.
+     */
+    virtual void prepareStream(int index);
     
 private:
     ValueContainer* container;

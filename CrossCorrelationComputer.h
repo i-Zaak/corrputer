@@ -17,8 +17,11 @@ public:
     
     float computePairValue(int one, int two, int start, int steps, int tau);
     
+protected:
+    virtual void prepareStream(int index);
+    
 private:
-
+    ValueStream** means;
 };
 
 #endif	/* CROSSCORRELATIONCOMPUTER_H */

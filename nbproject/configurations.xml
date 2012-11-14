@@ -17,10 +17,13 @@
       <logicalFolder name="f2" displayName="DataInputs" projectFiles="true">
         <itemPath>DataInputIface.cpp</itemPath>
         <itemPath>DataInputIface.h</itemPath>
+        <itemPath>NiftiInput.cpp</itemPath>
+        <itemPath>NiftiInput.h</itemPath>
         <itemPath>ScopeWinInput.cpp</itemPath>
         <itemPath>ScopeWinInput.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="lib" projectFiles="true">
+        <itemPath>lib/nifti1.h</itemPath>
         <itemPath>lib/scope.h</itemPath>
         <itemPath>lib/swutils.C</itemPath>
         <itemPath>lib/swutils.h</itemPath>
@@ -32,6 +35,7 @@
         <itemPath>SourcePointInfo.h</itemPath>
         <itemPath>ValueContainer.cpp</itemPath>
         <itemPath>ValueContainer.h</itemPath>
+        <itemPath>ValueContainerGenerator.cpp</itemPath>
         <itemPath>ValueFrame.cpp</itemPath>
         <itemPath>ValueFrame.h</itemPath>
         <itemPath>ValueStream.cpp</itemPath>
@@ -63,9 +67,13 @@
       <compileType>
         <ccTool>
           <commandLine>-fopenmp</commandLine>
+          <preprocessorList>
+            <Elem>COREL_MAIN</Elem>
+          </preprocessorList>
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_debug</output>
           <linkerLibItems>
             <linkerOptionItem>-lboost_serialization</linkerOptionItem>
           </linkerLibItems>
@@ -80,10 +88,13 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <developmentMode>5</developmentMode>
+          <developmentMode>6</developmentMode>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
+          <preprocessorList>
+            <Elem>COREL_MAIN</Elem>
+          </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
@@ -91,6 +102,35 @@
         <asmTool>
           <developmentMode>5</developmentMode>
         </asmTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release</output>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="ValueContainerGenerator" type="1">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>6</developmentMode>
+        </cTool>
+        <ccTool>
+          <developmentMode>5</developmentMode>
+          <preprocessorList>
+            <Elem>VALUE_CONTAINER_GENERATOR</Elem>
+          </preprocessorList>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/vcgen</output>
+        </linkerTool>
       </compileType>
     </conf>
   </confs>

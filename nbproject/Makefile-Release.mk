@@ -36,11 +36,13 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/ValueStream.o \
 	${OBJECTDIR}/ScopeWinInput.o \
+	${OBJECTDIR}/NiftiInput.o \
 	${OBJECTDIR}/CrossCorrelationComputer.o \
-	${OBJECTDIR}/SourceInfo.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/SourceInfo.o \
 	${OBJECTDIR}/DataInputIface.o \
 	${OBJECTDIR}/CorrelationComputer.o \
+	${OBJECTDIR}/ValueContainerGenerator.o \
 	${OBJECTDIR}/ValueFrame.o \
 	${OBJECTDIR}/lib/swutils.o \
 	${OBJECTDIR}/ValueContainer.o \
@@ -65,66 +67,76 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/ValueStream.o: ValueStream.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueStream.o ValueStream.cpp
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueStream.o ValueStream.cpp
 
 ${OBJECTDIR}/ScopeWinInput.o: ScopeWinInput.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ScopeWinInput.o ScopeWinInput.cpp
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/ScopeWinInput.o ScopeWinInput.cpp
+
+${OBJECTDIR}/NiftiInput.o: NiftiInput.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/NiftiInput.o NiftiInput.cpp
 
 ${OBJECTDIR}/CrossCorrelationComputer.o: CrossCorrelationComputer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/CrossCorrelationComputer.o CrossCorrelationComputer.cpp
-
-${OBJECTDIR}/SourceInfo.o: SourceInfo.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SourceInfo.o SourceInfo.cpp
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/CrossCorrelationComputer.o CrossCorrelationComputer.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/SourceInfo.o: SourceInfo.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/SourceInfo.o SourceInfo.cpp
 
 ${OBJECTDIR}/DataInputIface.o: DataInputIface.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/DataInputIface.o DataInputIface.cpp
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/DataInputIface.o DataInputIface.cpp
 
 ${OBJECTDIR}/CorrelationComputer.o: CorrelationComputer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/CorrelationComputer.o CorrelationComputer.cpp
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/CorrelationComputer.o CorrelationComputer.cpp
+
+${OBJECTDIR}/ValueContainerGenerator.o: ValueContainerGenerator.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueContainerGenerator.o ValueContainerGenerator.cpp
 
 ${OBJECTDIR}/ValueFrame.o: ValueFrame.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp
 
 ${OBJECTDIR}/lib/swutils.o: lib/swutils.C 
 	${MKDIR} -p ${OBJECTDIR}/lib
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/lib/swutils.o lib/swutils.C
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/lib/swutils.o lib/swutils.C
 
 ${OBJECTDIR}/ValueContainer.o: ValueContainer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueContainer.o ValueContainer.cpp
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueContainer.o ValueContainer.cpp
 
 ${OBJECTDIR}/SourcePointInfo.o: SourcePointInfo.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/SourcePointInfo.o SourcePointInfo.cpp
+	$(COMPILE.cc) -O2 -DCOREL_MAIN -MMD -MP -MF $@.d -o ${OBJECTDIR}/SourcePointInfo.o SourcePointInfo.cpp
 
 # Subprojects
 .build-subprojects:
@@ -132,7 +144,7 @@ ${OBJECTDIR}/SourcePointInfo.o: SourcePointInfo.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release
 
 # Subprojects
 .clean-subprojects:

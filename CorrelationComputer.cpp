@@ -28,22 +28,35 @@ void CorrelationComputer::setData(ValueContainer* container)
 }
 
 ValueContainer* CorrelationComputer::computeAll()
-{
+{   
+    // execution time measure
+    boost::progress_timer timer;
+    
     int count = this->container->getStreamsCount();
-    ValueStream** streams = new ValueStream*[count * count];
+    
+    std::cout << "Computing correlations for " << count << " streams..." << std::endl;
+    //ValueStream** streams = new ValueStream*[count * count];
     
     int one;
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for (one = 0; one < count; one++) {
+        boost::progress_timer timer;
         for (int two = 0; two < count; two++) {
-            // execution time measure
-            boost::progress_timer timer;
-            
-            streams[one * count + two] = this->computePair(one, two);
-            std::cout << "[" << one << " ; " << two << "] Done." << std::endl;
+            //streams[one * count + two] = this->computePair(one, two);
+            this->computePair(one, two);
+            //std::cout << "[" << one << " ; " << two << "] Done." << std::endl;
+        }
+        std::cout << "[" << one << " ; " << count << "] Done." << std::endl;
+        // "safety-plug" for large data taking too long while testing
+        // TODO: remove after testing
+        if (count > 1000 && one >= 4) {
+            return NULL;
         }
     }
-    return new ValueContainer(count * count, streams);
+    
+    std::cout << "All correlations computed." << std::endl;
+    //return new ValueContainer(count * count, streams);
+    return NULL;
 }
 
 ValueStream* CorrelationComputer::computePair(int one, int two)
@@ -64,21 +77,27 @@ ValueStream* CorrelationComputer::computePair(int one, int two)
     int windowSize = this->getWindowSize();
     int windowStep = windowSize;
     
-    
     int start = std::max(0, this->subpartStart);
-    int stop = dataLength - tauMax - windowSize;
+    int stop = std::max(start+1, dataLength - tauMax - windowSize);
     if (this->subpartLength > 0) {
         stop = std::min(this->subpartLength, dataLength - tauMax - windowSize);
     }
     if (start >= stop) {
-        throw "Invalid subpart configuration.";
+        throw std::runtime_error("Invalid subpart configuration.");
     }
+    
+    /**
+     * Prepare pre-computable data that could speed-up the correlation comp.
+     */
+    this->prepareStream(one);
+    this->prepareStream(two);
     
     /**
      * Find the largest correlation for every window position with changing tau
      * values and create the resulting correlation value stream.
      */
-    ValueStream* vsCorel = new ValueStream(stop - start);
+    ValueStream* vsCorel = new ValueStream();
+    vsCorel->reserve(stop - start);
     for (int pos = start; pos < stop; pos += windowStep) {
         float maxCor = 0.0f;
         // try all the tau values
@@ -93,4 +112,9 @@ ValueStream* CorrelationComputer::computePair(int one, int two)
     }
     
     return vsCorel;
+}
+
+void CorrelationComputer::prepareStream(int index)
+{
+    // TODO: load data from disk?
 }

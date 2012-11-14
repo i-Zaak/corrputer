@@ -10,7 +10,9 @@ extern "C" {
 #endif
 
 #include <cstdlib>
+#include <cstring>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
 #include <iostream>
