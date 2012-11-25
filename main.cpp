@@ -16,8 +16,7 @@
 #include "CrossCorrelationComputer.h"
 #include "CorrelationComputer.h"
 
-#include <boost/serialization/serialization.hpp>
-#include <boost/archive/binary_oarchive.hpp>
+#ifdef MAIN_CORRELATOR
 
 /*
  * 
@@ -55,3 +54,4 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+#endif

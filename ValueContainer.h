@@ -7,15 +7,17 @@
 #ifndef VALUECONTAINER_H
 #define	VALUECONTAINER_H
 
+#define VALUECONTAINER_FILE_VERSION 1
+#define VALUECONTAINER_FILE_DATAOFFSET 64
+
 #include "ValueFrame.h"
 #include "ValueStream.h"
 
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/archive/text_iarchive.hpp>
-#include <boost/serialization/vector.hpp>
+#include <fstream>
 
 class ValueContainer {
 public:
+    ValueContainer();
     ValueContainer(int framesCount, ValueFrame* frames);
     ValueContainer(int streamsCount, ValueStream** streams);
     ValueContainer(const ValueContainer& orig);
@@ -30,6 +32,26 @@ public:
         return this->streamsCount;
     }
     
+    void setStreamsCount(int count) {
+        this->streamsCount = count;
+        
+        // allocate required memory for streams
+        this->streams = new ValueStream*[streamsCount];
+    }
+    
+    /**
+     * Returns the number of values in a stream.
+     * 
+     * @return 
+     */
+    int getStreamsLength() {
+        return this->streamsLength;
+    }
+    
+    void setStreamsLength(int length) {
+        this->streamsLength = length;
+    }
+    
     /**
      * Returns a single value stream.
      * 
@@ -39,6 +61,19 @@ public:
     ValueStream* getStream(int index) {
         return this->streams[index];
     }
+    
+    /**
+     * Assigns a single value stream to the given index.
+     * This method should not be normally used.
+     * 
+     * @param index
+     * @param vs
+     */
+    void setStream(int index, ValueStream* vs) {
+        this->streams[index] = vs;
+    }
+    
+    //==========================================================================
     
     /**
      * Returns the number of frames available.
@@ -59,6 +94,44 @@ public:
         throw "Not implemented";
     }
     
+    //==========================================================================
+    
+    /**
+     * Loads header from a file.
+     * This is more or less an internal method.
+     * 
+     * @param index
+     * @param fout
+     */
+    void loadHeader(std::ifstream &fin);
+    
+    /**
+     * Saves header to a file.
+     * This is more or less an internal method.
+     * 
+     * @param index
+     * @param fout
+     */
+    void saveHeader(std::ofstream &fout);
+    
+    /**
+     * Loads the given stream from a file.
+     * This is more or less an internal method.
+     * 
+     * @param index
+     * @param fout
+     */
+    void loadStream(int index, std::ifstream &fin);
+    
+    /**
+     * Saves the given stream to a file.
+     * This is more or less an internal method.
+     * 
+     * @param index
+     * @param fout
+     */
+    void saveStream(int index, std::ofstream &fout);
+    
 private:
     /**
      * Number of streams in this container, i.e. size of streams attribute.
@@ -66,19 +139,15 @@ private:
     int streamsCount;
     
     /**
+     * Number of values in every stream.
+     */
+    int streamsLength;
+    
+    /**
      * Pole (matice) streamu.
      */
     ValueStream** streams;
    
-    friend class boost::serialization::access;
-    template<class Archive>
-    void serialize(Archive & ar, const unsigned int version)
-    {
-        ar & this->streamsCount;
-        for (int i = 0; i < this->streamsCount; i++) {
-            ar & this->streams[i];
-        }
-    }
 };
 
 #endif	/* VALUECONTAINER_H */

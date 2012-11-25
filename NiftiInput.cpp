@@ -20,6 +20,26 @@ NiftiInput::NiftiInput(const NiftiInput& orig) {
 NiftiInput::~NiftiInput() {
 }
 
+void NiftiInput::open(char* filename)
+{
+
+}
+
+void NiftiInput::close()
+{
+
+}
+
+void NiftiInput::loadHeader(ValueContainer* vc)
+{
+
+}
+
+ValueStream* NiftiInput::loadStream(int index)
+{
+    
+}
+
 ValueContainer* NiftiInput::load(char* filename)
 {
     //

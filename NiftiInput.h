@@ -19,6 +19,12 @@ public:
     NiftiInput(const NiftiInput& orig);
     virtual ~NiftiInput();
     
+    void open(char* filename);
+    void close();
+    
+    void loadHeader(ValueContainer* vc);
+    ValueStream* loadStream(int index);
+    
     ValueContainer* load(char* filename);
 private:
 

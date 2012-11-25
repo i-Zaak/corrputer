@@ -6,7 +6,6 @@
 
 #include "common.h"
 #include "ScopeWinInput.h"
-#include "lib/swutils.h"
 #include "DataInputIface.h"
 #include "ValueContainer.h"
 
@@ -19,50 +18,83 @@ ScopeWinInput::ScopeWinInput(const ScopeWinInput& orig) {
 ScopeWinInput::~ScopeWinInput() {
 }
 
-ValueContainer* ScopeWinInput::load(char* filename)
+void ScopeWinInput::open(char* filename)
 {
     printf("Opening file %s\n", filename);
-    FILE *file = fopen(filename, "rb");
+    this->file = fopen(filename, "rb");
 	
-    if (file == NULL) {
+    if (this->file == NULL) {
         throw std::runtime_error("File could not be opened.");
     }
     
-    printf("done\n");	
-    struct IG_s ig;
-    struct HG_s hg;
+    printf("opened\n");
+}
 
-    readIG(file, &ig);
+void ScopeWinInput::close()
+{
+    fclose(this->file);
+}
+
+void ScopeWinInput::loadHeader(ValueContainer* vc)
+{
+    printf("Loading header...");
+    
+    fseek(this->file,0,SEEK_SET);
+    
+    readIG(this->file, &this->ig);
     //printIG(&ig);
 
-    readHG(file, &hg);
+    readHG(this->file, &this->hg);
     //printHG( &hg);
 		
     if(sizeof (float) !=4){
         throw std::runtime_error("The size of float is wrong!");
     }
     
-    float *data = (float *) malloc(hg.Size * sizeof (float));
+    vc->setStreamsCount(this->hg.PocetZaznamu);
+    vc->setStreamsLength(this->hg.Size);
+    
+    printf("done.\n");
+}
+
+ValueStream* ScopeWinInput::loadStream(int index)
+{
+    printf("Loading stream %d...", index);
+    
+    float *data = (float *) malloc(this->hg.Size * sizeof (float));
     if (data == NULL) {
         throw std::runtime_error("Memory allocation failed!");
     }
-
-    ValueStream** streams = new ValueStream*[hg.PocetZaznamu];
     
-    fseek(file,2146,SEEK_SET);
-    for (int i = 0; i < hg.PocetZaznamu; i++) {
-        struct FG_s fg;
-        readFG(file, &fg);
-        //printFG(&fg);
+    fseek(this->file, 2146 + index*this->hg.Size*sizeof(float), SEEK_SET);
+    
+    struct FG_s fg;
+    readFG(this->file, &fg);
+    //printFG(&fg);
 
-        readData(file,data, hg.Size);
-        
-        // create a new value stream
-        streams[i] = new ValueStream();
-        streams[i]->reserve(hg.Size);
-        streams[i]->assign(data, data + hg.Size);
+    readData(this->file,data, this->hg.Size);
+
+    // create a new value stream
+    ValueStream* stream = new ValueStream();
+    stream->reserve(this->hg.Size);
+    stream->assign(data, data + this->hg.Size);
+    
+    delete data;
+    
+    printf("done.\n");
+    
+    return stream;
+}
+
+ValueContainer* ScopeWinInput::load(char* filename)
+{
+    this->open(filename);
+    
+    ValueContainer* vc = new ValueContainer();
+    
+    for (int i = 0; i < this->hg.PocetZaznamu; i++) {
+        vc->setStream(i, this->loadStream(i));
     }
     
-    // generate the final value container from the streams
-    return new ValueContainer(hg.PocetZaznamu, streams);
+    return vc;
 }

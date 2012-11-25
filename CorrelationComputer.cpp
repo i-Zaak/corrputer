@@ -7,7 +7,6 @@
 #include "CorrelationComputer.h"
 #include "common.h"
 #include <algorithm>
-#include <boost/progress.hpp>
 
 CorrelationComputer::CorrelationComputer() {
     this->windowSize = 100;
@@ -29,9 +28,6 @@ void CorrelationComputer::setData(ValueContainer* container)
 
 ValueContainer* CorrelationComputer::computeAll()
 {   
-    // execution time measure
-    boost::progress_timer timer;
-    
     int count = this->container->getStreamsCount();
     
     std::cout << "Computing correlations for " << count << " streams..." << std::endl;
@@ -40,7 +36,6 @@ ValueContainer* CorrelationComputer::computeAll()
     int one;
     //#pragma omp parallel for
     for (one = 0; one < count; one++) {
-        boost::progress_timer timer;
         for (int two = 0; two < count; two++) {
             //streams[one * count + two] = this->computePair(one, two);
             this->computePair(one, two);
