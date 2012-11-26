@@ -18,7 +18,6 @@
 class ValueContainer {
 public:
     ValueContainer();
-    ValueContainer(int framesCount, ValueFrame* frames);
     ValueContainer(int streamsCount, ValueStream** streams);
     ValueContainer(const ValueContainer& orig);
     virtual ~ValueContainer();
@@ -74,28 +73,7 @@ public:
     }
     
     //==========================================================================
-    
-    /**
-     * Returns the number of frames available.
-     * 
-     * @return 
-     */
-    int getFramesCount() {
-        throw "Not implemented";
-    }
-    
-    /**
-     * Returns a single frame from this container.
-     * 
-     * @param index
-     * @return 
-     */
-    ValueFrame* getFrame(int index) {
-        throw "Not implemented";
-    }
-    
-    //==========================================================================
-    
+   
     /**
      * Loads header from a file.
      * This is more or less an internal method.
@@ -132,6 +110,11 @@ public:
      */
     void saveStream(int index, std::ofstream &fout);
     
+    /**
+     * Frees resources associated with the given stream.
+     */
+    void freeStream(int index);
+    
 private:
     /**
      * Number of streams in this container, i.e. size of streams attribute.
@@ -144,7 +127,7 @@ private:
     int streamsLength;
     
     /**
-     * Pole (matice) streamu.
+     * Array of streams.
      */
     ValueStream** streams;
    

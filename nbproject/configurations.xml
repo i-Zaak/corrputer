@@ -86,6 +86,13 @@
           <commandLine>-fopenmp</commandLine>
         </linkerTool>
       </compileType>
+      <folder path="TestFiles/f1">
+        <linkerTool>
+          <linkerLibItems>
+            <linkerOptionItem>`pkg-config --libs cppunit`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>

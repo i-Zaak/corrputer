@@ -12,17 +12,9 @@ ValueContainer::ValueContainer() {
     
 }
 
-ValueContainer::ValueContainer(int framesCount, ValueFrame* frames) {
-    throw "Not implemented";
-}
-
 ValueContainer::ValueContainer(int streamsCount, ValueStream** streams) {
     this->streamsCount = streamsCount;
     this->streams = streams;
-}
-
-ValueContainer::ValueContainer(const ValueContainer& orig) {
-    throw "Not implemented";
 }
 
 ValueContainer::~ValueContainer() {
@@ -37,21 +29,21 @@ void ValueContainer::loadHeader(std::ifstream &fin)
     
     // version check
     int version;
-    fin >> version;
+    fin.read((char*)&version, 4);
     if (version != VALUECONTAINER_FILE_VERSION) {
         throw std::runtime_error("Invalid ValueContainer file version.");
     }
     
     // streams count
     int streamsCount;
-    fin >> streamsCount;
+    fin.read((char*)&streamsCount, 4);
     if (streamsCount < 1) {
         throw std::runtime_error("Invalid ValueContainer streams count.");
     }
     
     // streams length
     int streamsLength;
-    fin >> streamsLength;
+    fin.read((char*)&streamsLength, 4);
     if (streamsLength < 1) {
         throw std::runtime_error("Invalid ValueContainer streams length.");
     }
@@ -69,13 +61,14 @@ void ValueContainer::saveHeader(std::ofstream &fout)
     fout.seekp(0, std::ios::beg);
     
     // version
-    fout << ((int)VALUECONTAINER_FILE_VERSION);
+    int version = VALUECONTAINER_FILE_VERSION;
+    fout.write((char*)&version, 4);
     
     // streams count
-    fout << this->streamsCount;
+    fout.write((char*)&this->streamsCount, 4);
     
     // streams length
-    fout << this->streamsLength;
+    fout.write((char*)&this->streamsLength, 4);
 }
 
 //==========================================================================
@@ -108,4 +101,18 @@ void ValueContainer::saveStream(int index, std::ofstream &fout)
     // write the data block
     float* data = &((*this->streams[index])[0]);
     fout.write((char*)data, sizeof(float) * this->streamsLength);
+}
+
+//==========================================================================
+
+void ValueContainer::freeStream(int index)
+{
+    ValueStream* vs = this->streams[index];
+    
+    if (vs == NULL) {
+        return;
+    }
+    
+    this->streams[index] = NULL;
+    delete vs;
 }

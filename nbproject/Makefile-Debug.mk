@@ -152,7 +152,7 @@ ${OBJECTDIR}/SourcePointInfo.o: SourcePointInfo.cpp
 .build-tests-conf: .build-conf ${TESTFILES}
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/ValueContainerSerializationTest.o ${TESTDIR}/tests/testrunner.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
+	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} `pkg-config --libs cppunit`   
 
 
 ${TESTDIR}/tests/ValueContainerSerializationTest.o: tests/ValueContainerSerializationTest.cpp 
