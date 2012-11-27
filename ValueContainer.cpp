@@ -9,15 +9,45 @@
 #include "ValueContainer.h"
 
 ValueContainer::ValueContainer() {
-    
+    this->streams = NULL;
+    this->chainedData = NULL;
 }
 
 ValueContainer::ValueContainer(int streamsCount, ValueStream** streams) {
     this->streamsCount = streamsCount;
     this->streams = streams;
+    
+    this->chainedData = new ChainedObject*[this->streamsCount];
 }
 
 ValueContainer::~ValueContainer() {
+    if (this->streams != NULL) {
+        delete this->streams;
+    }
+    
+    if (this->chainedData != NULL) {
+        // TODO: free chained pointers
+        delete this->chainedData;
+    }
+}
+
+void ValueContainer::setStreamsCount(int count)
+{
+    this->streamsCount = count;
+        
+    // allocate required memory for streams
+    if (this->streams != NULL) {
+        // TODO: free streams
+        delete this->streams;
+    }
+    this->streams = new ValueStream*[this->streamsCount];
+    
+    // allocate array of pointer for chained data
+    if (this->chainedData != NULL) {
+        // TODO: free chained pointers
+        delete this->chainedData;
+    }
+    this->chainedData = new ChainedObject*[this->streamsCount];
 }
 
 //==========================================================================
@@ -115,4 +145,30 @@ void ValueContainer::freeStream(int index)
     
     this->streams[index] = NULL;
     delete vs;
+    
+    // chained data?
+    if (this->chainedData[index] != NULL) {
+        delete this->chainedData[index];
+        this->chainedData[index] = NULL;
+    }
+}
+
+//==========================================================================
+
+ChainedObject* ValueContainer::getChainedData(int index)
+{
+    if (index < 0 || index > this->streamsCount) {
+        throw std::runtime_error("Invalid index");
+    }
+    return this->chainedData[index];
+}
+
+//==========================================================================
+
+void ValueContainer::setChainedData(int index, ChainedObject* data)
+{
+    if (index < 0 || index > this->streamsCount) {
+        throw std::runtime_error("Invalid index");
+    }
+    this->chainedData[index] = data;
 }

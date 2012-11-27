@@ -15,6 +15,31 @@
 
 #include <fstream>
 
+/**
+ * Base class used for chained objects (for details: {@see ValueContainer}).
+ */
+class ChainedObject {
+public:
+    ChainedObject() {};
+    virtual ~ChainedObject() {};
+};
+
+/**
+ * Value container holds an array of streams. Streams contain float values.
+ * This class works as a universal value exchange storage.
+ * 
+ * It features methods used for serialisation and deserialisation to and from
+ * binary streams.
+ * Dynamic loading and unloading is supported - the container is able to load
+ * stream data on demand and free the associated memory upon request.
+ * 
+ * It is possible to associate arbitrary blocks of memory to any stream.
+ * The process is called "chaining" - when the stream is to be freed from the
+ * memory, the data chained to this stream is delete-ed as well.
+ * The chained memory is required to be allocated by "new" so it can be freed
+ * using "delete". This provides a way to associate objects and to use their
+ * destructors.
+ */
 class ValueContainer {
 public:
     ValueContainer();
@@ -31,12 +56,7 @@ public:
         return this->streamsCount;
     }
     
-    void setStreamsCount(int count) {
-        this->streamsCount = count;
-        
-        // allocate required memory for streams
-        this->streams = new ValueStream*[streamsCount];
-    }
+    void setStreamsCount(int count);
     
     /**
      * Returns the number of values in a stream.
@@ -115,6 +135,25 @@ public:
      */
     void freeStream(int index);
     
+    //==========================================================================
+   
+    /**
+     * Returns pointer to previously set chained data or NULL when no previous
+     * setting occurred.
+     * 
+     * @param index
+     * @return 
+     */
+    ChainedObject* getChainedData(int index);
+    
+    /**
+     * Chains a pointer value to the given stream index.
+     * 
+     * @param index
+     * @param data
+     */
+    void setChainedData(int index, ChainedObject* data);
+    
 private:
     /**
      * Number of streams in this container, i.e. size of streams attribute.
@@ -130,6 +169,14 @@ private:
      * Array of streams.
      */
     ValueStream** streams;
+    
+    /**
+     * Pointer array chained to this one. The size corresponds to the streams
+     * array.
+     * 
+     * The purpose of the chained data is to make the memory management easier.
+     */
+    ChainedObject** chainedData;
    
 };
 

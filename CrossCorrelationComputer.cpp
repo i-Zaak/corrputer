@@ -6,6 +6,33 @@
 
 #include "CrossCorrelationComputer.h"
 
+/**
+ * Helper class containing statistics chained to a value stream.
+ */
+class ChainedStatistics : public ChainedObject
+{
+public:
+    ChainedStatistics() {
+        this->means = new ValueStream();
+        this->variances = new ValueStream();
+    }
+    virtual ~ChainedStatistics() {
+        delete this->means;
+        delete this->variances;
+    }
+    
+    ValueStream* getMeans() {
+        return this->means;
+    }
+    ValueStream* getVariances() {
+        return this->variances;
+    }
+    
+private:
+    ValueStream* means;
+    ValueStream* variances;
+};
+
 CrossCorrelationComputer::CrossCorrelationComputer() {
 }
 
@@ -17,17 +44,21 @@ CrossCorrelationComputer::~CrossCorrelationComputer() {
 
 float CrossCorrelationComputer::computePairValue(int one, int two, int start, int steps, int tau)
 {   
+    // values
     ValueStream* vsOne = this->getValues()->getStream(one);
     ValueStream* vsTwo = this->getValues()->getStream(two);
+    
+    // prepared statistics
+    ChainedStatistics* chOne = (ChainedStatistics*)this->getValues()->getChainedData(one);
+    ChainedStatistics* chTwo = (ChainedStatistics*)this->getValues()->getChainedData(two);
     
     int stop = start + steps;
     int i;
     
-    // TODO: lazy-load statistical data
-    float meanOne = 1.0f;//this->means[one]->at(start);
-    float meanTwo = 1.0f;//this->means[two]->at(start + tau);
-    float varianceOne = 1.0f;
-    float varianceTwo = 1.0f;
+    float meanOne = chOne->getMeans()->at(start);
+    float meanTwo = chTwo->getMeans()->at(start + tau);
+    float varianceOne = chOne->getVariances()->at(start);
+    float varianceTwo = chTwo->getVariances()->at(start + tau);
     
     // compute the result based on the formula
     float sum = 0.0f;
@@ -42,14 +73,21 @@ float CrossCorrelationComputer::computePairValue(int one, int two, int start, in
 
 void CrossCorrelationComputer::prepareStream(int index)
 {
-    // TODO: cache-like approach = check if the data is already loaded and if
-    //       so, return immediately.
-    
-    // data loading (should be internally performed lazily and cache-like)
     ValueContainer* vc = this->getValues();
-    ValueStream* values = vc->getStream(index);
+    ChainedStatistics* chained = (ChainedStatistics*)vc->getChainedData(index);
+    
+    // is the stream already prepared?
+    if (chained != NULL) {
+        // we got it for free!
+        return;
+    }
+    
+    // create a new chained object
+    chained = new ChainedStatistics();
+    vc->setChainedData(index, chained);
     
     // load configuration
+    ValueStream* values = vc->getStream(index);
     int windowSize = this->getWindowSize();
     int dataLength = values->size();
     
@@ -57,8 +95,9 @@ void CrossCorrelationComputer::prepareStream(int index)
     //          Statistical data computation
     //
     
-    // resulting means
-    ValueStream* means = new ValueStream();
+    // resulting streams
+    ValueStream* means = chained->getMeans();
+    ValueStream* variances = chained->getVariances();
     
     int pos;
     int sum = 0;
@@ -67,6 +106,9 @@ void CrossCorrelationComputer::prepareStream(int index)
         float val = values->at(pos);
         sum += val;
         means->push_back(sum / (pos+1));
+        
+        // TODO: compute variances
+        variances->push_back(1.0f);
     }
     // windowed running mean computation
     float invN = 1.0f / windowSize; // precomputed value
@@ -75,9 +117,8 @@ void CrossCorrelationComputer::prepareStream(int index)
         float valOld = values->at(pos - windowSize);
         sum += val - valOld;
         means->push_back(sum * invN);
+        
+        // TODO: compute variances
+        variances->push_back(1.0f);
     }
-    
-    // TODO: save the calculated means for later
-    // TODO: free older and no longer needed memory
-    delete means;
 }

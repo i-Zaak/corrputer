@@ -60,17 +60,28 @@ int main(int argc, char** argv) {
      *  78.....
      *  78.....
      * ---------
-     *  .......
+     *     .   
+     *     .  
+     *     .   
      */
     
-    // compute correlations by blocks
-    int blockHeight = 5;
+    // size of a block
+    // TODO: magically guess - based on StreamsLength and available memory
+    int blockHeight = 80;
+    
     int corelWidth = vc.getStreamsCount();
+    
+    // limit block height
+    if (blockHeight > corelWidth) {
+        // all the streams can be loaded at once
+        blockHeight = corelWidth;
+    }
+    
+    // prepare blocks configuration
     int blocksInCol = (corelWidth + blockHeight-1) / blockHeight;
     int blocksCount = blocksInCol * corelWidth;
     
-    vc.loadStream(0, fin);
-    ValueStream *vsHack = vc.getStream(0);
+    // process all blocks
     for (int blockNum = 0; blockNum < blocksCount; blockNum++) {
         // prepare state information
         int startPos = ((blockNum % corelWidth) + (blockNum / corelWidth) * corelWidth * blockHeight);
@@ -83,7 +94,7 @@ int main(int argc, char** argv) {
             for (int y = 0; y < blockHeight; y++) {
                 int prevIndex = ((blockNum / corelWidth) - 1) * blockHeight + y;
                 int curIndex = blockNum / corelWidth * blockHeight + y;
-                if (prevIndex >= 0) {
+                if (prevIndex >= 0 && prevIndex < corelWidth) {
                     vc.freeStream(prevIndex);
                 }
                 if (curIndex < corelWidth) {
@@ -111,8 +122,12 @@ int main(int argc, char** argv) {
             // compute correlation
             int one = blockStartIndex + y;
             int two = colIndex;
+            if (one >= corelWidth) {
+                // we fell down from the correlation matrix!
+                break;
+            }
             if (one == two) {
-                // TODO: fake stream of 1s
+                // TODO: fake stream of 1.0s?
                 continue;
             } else if (one > two) {
                 // only half of the matrix is really computed
@@ -132,11 +147,14 @@ int main(int argc, char** argv) {
             vc.freeStream(colIndex);
         }
         
-        printf("= = %02d / %02d = =\n", blockNum, blocksCount-1);
+        float proc = blockNum * 100.0f / (1.0f * (blocksCount-1));
+        printf("... %02d / %02d ... %2.1f%%\n", blockNum, blocksCount-1, proc);
     }
     
     fin.close();
     fout.close();
+    
+    printf("Done\n");
     
     return 0;
 }

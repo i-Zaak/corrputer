@@ -111,5 +111,4 @@ ValueStream* CorrelationComputer::computePair(int one, int two)
 
 void CorrelationComputer::prepareStream(int index)
 {
-    // TODO: load data from disk?
 }
