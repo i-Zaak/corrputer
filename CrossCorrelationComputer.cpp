@@ -4,7 +4,11 @@
  * @author David Nemecek <dejvino at gmail dot com>
  */
 
+#include "common.h"
 #include "CrossCorrelationComputer.h"
+#include "Statistics.h"
+
+//==========================================================================
 
 /**
  * Helper class containing statistics chained to a value stream.
@@ -33,6 +37,9 @@ private:
     ValueStream* variances;
 };
 
+//==========================================================================
+//==========================================================================
+
 CrossCorrelationComputer::CrossCorrelationComputer() {
 }
 
@@ -41,6 +48,8 @@ CrossCorrelationComputer::CrossCorrelationComputer(const CrossCorrelationCompute
 
 CrossCorrelationComputer::~CrossCorrelationComputer() {
 }
+
+//==========================================================================
 
 float CrossCorrelationComputer::computePairValue(int one, int two, int start, int steps, int tau)
 {   
@@ -71,6 +80,8 @@ float CrossCorrelationComputer::computePairValue(int one, int two, int start, in
     return (1.0f / steps) * sum;
 }
 
+//==========================================================================
+
 void CrossCorrelationComputer::prepareStream(int index)
 {
     ValueContainer* vc = this->getValues();
@@ -99,16 +110,33 @@ void CrossCorrelationComputer::prepareStream(int index)
     ValueStream* means = chained->getMeans();
     ValueStream* variances = chained->getVariances();
     
+    float prev_powersumavg = 0.0f;
+    float prev_sma = 0.0f;
+        
     int pos;
-    int sum = 0;
+    float sum = 0.0f;
     // unrolled init loop to fill the window
     for (pos = 0; pos < windowSize; pos++) {
         float val = values->at(pos);
+        
+        // compute mean
         sum += val;
         means->push_back(sum / (pos+1));
         
-        // TODO: compute variances
-        variances->push_back(1.0f);
+        // compute variance
+        float new_sma = running_sma(pos, values, windowSize, prev_sma);
+        float new_powersumavg = powersumavg(pos,
+                                  values,
+                                  windowSize,
+                                  prev_powersumavg);
+        float new_var = running_var(pos,
+                          values,
+                          windowSize,
+                          new_sma,
+                          new_powersumavg);
+        prev_sma = new_sma;
+        prev_powersumavg = new_powersumavg;
+        variances->push_back(new_var);
     }
     // windowed running mean computation
     float invN = 1.0f / windowSize; // precomputed value
@@ -118,7 +146,19 @@ void CrossCorrelationComputer::prepareStream(int index)
         sum += val - valOld;
         means->push_back(sum * invN);
         
-        // TODO: compute variances
-        variances->push_back(1.0f);
+        // compute variance
+        float new_sma = running_sma(pos, values, windowSize, prev_sma);
+        float new_powersumavg = powersumavg(pos,
+                                  values,
+                                  windowSize,
+                                  prev_powersumavg);
+        float new_var = running_var(pos,
+                          values,
+                          windowSize,
+                          new_sma,
+                          new_powersumavg);
+        prev_sma = new_sma;
+        prev_powersumavg = new_powersumavg;
+        variances->push_back(new_var);
     }
 }

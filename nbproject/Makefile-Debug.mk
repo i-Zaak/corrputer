@@ -43,6 +43,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/SourceInfo.o \
 	${OBJECTDIR}/DataInputIface.o \
 	${OBJECTDIR}/CorrelationComputer.o \
+	${OBJECTDIR}/Statistics.o \
 	${OBJECTDIR}/ValueFrame.o \
 	${OBJECTDIR}/ValueContainerGenerator.o \
 	${OBJECTDIR}/lib/swutils.o \
@@ -54,6 +55,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 
 # Test Files
 TESTFILES= \
+	${TESTDIR}/TestFiles/f2 \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver
 
 # C Compiler Flags
@@ -120,6 +122,11 @@ ${OBJECTDIR}/CorrelationComputer.o: CorrelationComputer.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/CorrelationComputer.o CorrelationComputer.cpp
 
+${OBJECTDIR}/Statistics.o: Statistics.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/Statistics.o Statistics.cpp
+
 ${OBJECTDIR}/ValueFrame.o: ValueFrame.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -150,9 +157,19 @@ ${OBJECTDIR}/SourcePointInfo.o: SourcePointInfo.cpp
 
 # Build Test Targets
 .build-tests-conf: .build-conf ${TESTFILES}
+${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/RunningVarianceTest.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc}   -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS} 
+
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/ValueContainerSerializationTest.o ${TESTDIR}/tests/testrunner.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} `pkg-config --libs cppunit`   
+
+
+${TESTDIR}/tests/RunningVarianceTest.o: tests/RunningVarianceTest.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/RunningVarianceTest.o tests/RunningVarianceTest.cpp
 
 
 ${TESTDIR}/tests/ValueContainerSerializationTest.o: tests/ValueContainerSerializationTest.cpp 
@@ -271,6 +288,19 @@ ${OBJECTDIR}/CorrelationComputer_nomain.o: ${OBJECTDIR}/CorrelationComputer.o Co
 	    ${CP} ${OBJECTDIR}/CorrelationComputer.o ${OBJECTDIR}/CorrelationComputer_nomain.o;\
 	fi
 
+${OBJECTDIR}/Statistics_nomain.o: ${OBJECTDIR}/Statistics.o Statistics.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/Statistics.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/Statistics_nomain.o Statistics.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/Statistics.o ${OBJECTDIR}/Statistics_nomain.o;\
+	fi
+
 ${OBJECTDIR}/ValueFrame_nomain.o: ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/ValueFrame.o`; \
@@ -340,6 +370,7 @@ ${OBJECTDIR}/SourcePointInfo_nomain.o: ${OBJECTDIR}/SourcePointInfo.o SourcePoin
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
+	    ${TESTDIR}/TestFiles/f2 || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	else  \
 	    ./${TEST} || true; \
