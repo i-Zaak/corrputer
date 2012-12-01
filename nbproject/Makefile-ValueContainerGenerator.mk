@@ -56,6 +56,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 # Test Files
 TESTFILES= \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
+	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${TESTDIR}/TestFiles/f1
 
 # C Compiler Flags
@@ -157,6 +158,10 @@ ${OBJECTDIR}/SourcePointInfo.o: SourcePointInfo.cpp
 
 # Build Test Targets
 .build-tests-conf: .build-conf ${TESTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/CrossCorrelationTest.o ${TESTDIR}/tests/CrossCorrelationTestRunner.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
+
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/RunningVarianceTest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
@@ -164,6 +169,18 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/Runnin
 ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/ValueContainerSerializationTest.o ${TESTDIR}/tests/testrunner.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} -lcppunit 
+
+
+${TESTDIR}/tests/CrossCorrelationTest.o: tests/CrossCorrelationTest.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${TESTDIR}/tests/CrossCorrelationTest.o tests/CrossCorrelationTest.cpp
+
+
+${TESTDIR}/tests/CrossCorrelationTestRunner.o: tests/CrossCorrelationTestRunner.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${TESTDIR}/tests/CrossCorrelationTestRunner.o tests/CrossCorrelationTestRunner.cpp
 
 
 ${TESTDIR}/tests/RunningVarianceTest.o: tests/RunningVarianceTest.cpp 
@@ -370,6 +387,7 @@ ${OBJECTDIR}/SourcePointInfo_nomain.o: ${OBJECTDIR}/SourcePointInfo.o SourcePoin
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
+	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${TESTDIR}/TestFiles/f1 || true; \
 	else  \

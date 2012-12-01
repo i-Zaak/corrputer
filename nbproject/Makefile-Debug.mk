@@ -55,6 +55,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 
 # Test Files
 TESTFILES= \
+	${TESTDIR}/TestFiles/f3 \
 	${TESTDIR}/TestFiles/f2 \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver
 
@@ -157,6 +158,10 @@ ${OBJECTDIR}/SourcePointInfo.o: SourcePointInfo.cpp
 
 # Build Test Targets
 .build-tests-conf: .build-conf ${TESTFILES}
+${TESTDIR}/TestFiles/f3: ${TESTDIR}/tests/CrossCorrelationTest.o ${TESTDIR}/tests/CrossCorrelationTestRunner.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc}   -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS} -lcppunit 
+
 ${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/RunningVarianceTest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS} 
@@ -164,6 +169,18 @@ ${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/RunningVarianceTest.o ${OBJECTFILES:%.
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/ValueContainerSerializationTest.o ${TESTDIR}/tests/testrunner.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} `pkg-config --libs cppunit`   
+
+
+${TESTDIR}/tests/CrossCorrelationTest.o: tests/CrossCorrelationTest.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/CrossCorrelationTest.o tests/CrossCorrelationTest.cpp
+
+
+${TESTDIR}/tests/CrossCorrelationTestRunner.o: tests/CrossCorrelationTestRunner.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR -I. -MMD -MP -MF $@.d -o ${TESTDIR}/tests/CrossCorrelationTestRunner.o tests/CrossCorrelationTestRunner.cpp
 
 
 ${TESTDIR}/tests/RunningVarianceTest.o: tests/RunningVarianceTest.cpp 
@@ -370,6 +387,7 @@ ${OBJECTDIR}/SourcePointInfo_nomain.o: ${OBJECTDIR}/SourcePointInfo.o SourcePoin
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
+	    ${TESTDIR}/TestFiles/f3 || true; \
 	    ${TESTDIR}/TestFiles/f2 || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	else  \
