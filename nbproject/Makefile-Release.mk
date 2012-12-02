@@ -35,6 +35,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/SimpleComputationFramework.o \
 	${OBJECTDIR}/ValueStream.o \
 	${OBJECTDIR}/ScopeWinInput.o \
 	${OBJECTDIR}/CrossCorrelationComputer.o \
@@ -42,6 +43,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/SourceInfo.o \
 	${OBJECTDIR}/DataInputIface.o \
+	${OBJECTDIR}/ComputationFramework.o \
+	${OBJECTDIR}/main_mpi.o \
 	${OBJECTDIR}/CorrelationComputer.o \
 	${OBJECTDIR}/Statistics.o \
 	${OBJECTDIR}/ValueFrame.o \
@@ -83,6 +86,11 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
+${OBJECTDIR}/SimpleComputationFramework.o: SimpleComputationFramework.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/SimpleComputationFramework.o SimpleComputationFramework.cpp
+
 ${OBJECTDIR}/ValueStream.o: ValueStream.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -117,6 +125,16 @@ ${OBJECTDIR}/DataInputIface.o: DataInputIface.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/DataInputIface.o DataInputIface.cpp
+
+${OBJECTDIR}/ComputationFramework.o: ComputationFramework.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/ComputationFramework.o ComputationFramework.cpp
+
+${OBJECTDIR}/main_mpi.o: main_mpi.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/main_mpi.o main_mpi.cpp
 
 ${OBJECTDIR}/CorrelationComputer.o: CorrelationComputer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -200,6 +218,19 @@ ${TESTDIR}/tests/testrunner.o: tests/testrunner.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${TESTDIR}/tests/testrunner.o tests/testrunner.cpp
 
+
+${OBJECTDIR}/SimpleComputationFramework_nomain.o: ${OBJECTDIR}/SimpleComputationFramework.o SimpleComputationFramework.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/SimpleComputationFramework.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/SimpleComputationFramework_nomain.o SimpleComputationFramework.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/SimpleComputationFramework.o ${OBJECTDIR}/SimpleComputationFramework_nomain.o;\
+	fi
 
 ${OBJECTDIR}/ValueStream_nomain.o: ${OBJECTDIR}/ValueStream.o ValueStream.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -290,6 +321,32 @@ ${OBJECTDIR}/DataInputIface_nomain.o: ${OBJECTDIR}/DataInputIface.o DataInputIfa
 	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/DataInputIface_nomain.o DataInputIface.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/DataInputIface.o ${OBJECTDIR}/DataInputIface_nomain.o;\
+	fi
+
+${OBJECTDIR}/ComputationFramework_nomain.o: ${OBJECTDIR}/ComputationFramework.o ComputationFramework.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/ComputationFramework.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/ComputationFramework_nomain.o ComputationFramework.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/ComputationFramework.o ${OBJECTDIR}/ComputationFramework_nomain.o;\
+	fi
+
+${OBJECTDIR}/main_mpi_nomain.o: ${OBJECTDIR}/main_mpi.o main_mpi.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/main_mpi.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/main_mpi_nomain.o main_mpi.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/main_mpi.o ${OBJECTDIR}/main_mpi_nomain.o;\
 	fi
 
 ${OBJECTDIR}/CorrelationComputer_nomain.o: ${OBJECTDIR}/CorrelationComputer.o CorrelationComputer.cpp 

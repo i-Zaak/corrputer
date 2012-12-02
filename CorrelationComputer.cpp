@@ -4,6 +4,9 @@
  * @author David Nemecek <dejvino at gmail dot com>
  */
 
+#include <stdexcept>
+
+
 #include "CorrelationComputer.h"
 #include "common.h"
 #include <algorithm>
@@ -66,6 +69,10 @@ ValueStream* CorrelationComputer::computePair(int one, int two)
      */
     ValueStream* vsOne = this->getValues()->getStream(one);
     ValueStream* vsTwo = this->getValues()->getStream(two);
+    
+    if (vsOne == NULL || vsTwo == NULL) {
+        throw std::runtime_error("Value streams not loaded properly.");
+    }
     
     int dataLength = std::min(vsOne->size(), vsTwo->size());
     int tauMax = this->getTauMax();

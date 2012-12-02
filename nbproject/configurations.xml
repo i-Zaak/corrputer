@@ -8,6 +8,12 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="f6" displayName="ComputationFramework" projectFiles="true">
+        <itemPath>ComputationFramework.cpp</itemPath>
+        <itemPath>ComputationFramework.h</itemPath>
+        <itemPath>SimpleComputationFramework.cpp</itemPath>
+        <itemPath>SimpleComputationFramework.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="f4" displayName="Correlation" projectFiles="true">
         <itemPath>CorrelationComputer.cpp</itemPath>
         <itemPath>CorrelationComputer.h</itemPath>
@@ -48,6 +54,7 @@
       <itemPath>ValueContainerGenerator.cpp</itemPath>
       <itemPath>common.h</itemPath>
       <itemPath>main.cpp</itemPath>
+      <itemPath>main_mpi.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"
