@@ -30,6 +30,14 @@ CND_ARTIFACT_PATH_ValueContainerGenerator=dist/ValueContainerGenerator/GNU-Linux
 CND_PACKAGE_DIR_ValueContainerGenerator=dist/ValueContainerGenerator/GNU-Linux-x86/package
 CND_PACKAGE_NAME_ValueContainerGenerator=masterserver.tar
 CND_PACKAGE_PATH_ValueContainerGenerator=dist/ValueContainerGenerator/GNU-Linux-x86/package/masterserver.tar
+# Debug_MPI configuration
+CND_PLATFORM_Debug_MPI=GNU-Linux-x86
+CND_ARTIFACT_DIR_Debug_MPI=dist/Debug_MPI/GNU-Linux-x86
+CND_ARTIFACT_NAME_Debug_MPI=masterserver_debug
+CND_ARTIFACT_PATH_Debug_MPI=dist/Debug_MPI/GNU-Linux-x86/masterserver_debug
+CND_PACKAGE_DIR_Debug_MPI=dist/Debug_MPI/GNU-Linux-x86/package
+CND_PACKAGE_NAME_Debug_MPI=masterserver.tar
+CND_PACKAGE_PATH_Debug_MPI=dist/Debug_MPI/GNU-Linux-x86/package/masterserver.tar
 #
 # include compiler specific variables
 #

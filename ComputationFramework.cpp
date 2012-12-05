@@ -1,8 +1,8 @@
 #include "ComputationFramework.h"
 
-ComputationFramework::ComputationFramework(std::string fileIn, std::string fileOut, CorrelationComputer* cc) {
-    this->fileIn = new std::string(fileIn);
-    this->fileOut = new std::string(fileOut);
+ComputationFramework::ComputationFramework(std::string* fileIn, std::string* fileOut, CorrelationComputer* cc) {
+    this->fileIn = fileIn;
+    this->fileOut = fileOut;
     this->corelComp = cc;
 }
 
@@ -104,11 +104,12 @@ void ComputationFramework::setActiveBlock(int num)
 
 bool ComputationFramework::nextBlock()
 {
-    this->activeBlock++;
-    return this->activeBlock < this->getBlocksCount();
+    this->activeBlock = (this->activeBlock + 1) % this->blocksCount;
     
     // callback
     this->onNextBlock();
+    
+    return this->activeBlock > 0;
 }
 
 //==========================================================================
@@ -126,24 +127,35 @@ void ComputationFramework::compute()
 
 //==========================================================================
 
+ValueContainer* ComputationFramework::getInputValues()
+{
+    return this->vcIn;
+}
+
+//==========================================================================
+
 void ComputationFramework::computeBlock(int blockNum)
 {
     // prepare state information
     int startPos = ((blockNum % corelWidth) + (blockNum / corelWidth) * corelWidth * blockHeight);
     int colIndex = blockNum % corelWidth; 
-    int blockStartIndex = blockNum / corelWidth;
+    int blockStartIndex = blockNum / corelWidth * blockHeight;
     
+    //printf("ComputeBlock %d\n", blockNum);
     // change of rows?
     if (this->previousBlock < 0 || (blockNum / corelWidth) != (this->previousBlock / corelWidth)) {
+        //printf("Changing row: %d --> %d\n", previousBlock, blockNum);
         // free previous rows and load new rows
         for (int y = 0; y < blockHeight; y++) {
             int prevIndex = (this->previousBlock / corelWidth) * blockHeight + y;
             int curIndex = (blockNum / corelWidth) * blockHeight + y;
-            if (prevIndex >= 0 && prevIndex < corelWidth) {
+            if (previousBlock >= 0 && prevIndex >= 0 && prevIndex < corelWidth) {
                 this->vcIn->freeStream(prevIndex);
+                //printf("ComputeBlock :: free %d\n", prevIndex);
             }
             if (curIndex < corelWidth) {
                 this->vcIn->loadStream(curIndex, *fin);
+                //printf("ComputeBlock :: load %d\n", curIndex);
             }
         }
     }
@@ -161,6 +173,7 @@ void ComputationFramework::computeBlock(int blockNum)
     if (colIndex < blockStartIndex || colIndex >= blockStartIndex + blockHeight) {
         // load only if this stream is not already loaded
         this->vcIn->loadStream(colIndex, *fin);
+        //printf("ComputeBlock :: load column %d\n", colIndex);
     }
         
     // <-- now all the required streams are loaded
@@ -197,6 +210,7 @@ void ComputationFramework::computeBlock(int blockNum)
     // free column stream
     if (colIndex < blockStartIndex || colIndex >= blockStartIndex + blockHeight) {
         this->vcIn->freeStream(colIndex);
+        //printf("ComputeBlock :: free column %d\n", colIndex);
     }
 }
 

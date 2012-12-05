@@ -11,6 +11,8 @@
       <logicalFolder name="f6" displayName="ComputationFramework" projectFiles="true">
         <itemPath>ComputationFramework.cpp</itemPath>
         <itemPath>ComputationFramework.h</itemPath>
+        <itemPath>DistributedComputationFramework.cpp</itemPath>
+        <itemPath>DistributedComputationFramework.h</itemPath>
         <itemPath>SimpleComputationFramework.cpp</itemPath>
         <itemPath>SimpleComputationFramework.h</itemPath>
       </logicalFolder>
@@ -33,6 +35,14 @@
         <itemPath>lib/scope.h</itemPath>
         <itemPath>lib/swutils.C</itemPath>
         <itemPath>lib/swutils.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f7" displayName="MPI" projectFiles="true">
+        <itemPath>mpi/Coordinator.cpp</itemPath>
+        <itemPath>mpi/Saver.cpp</itemPath>
+        <itemPath>mpi/Worker.cpp</itemPath>
+        <itemPath>mpi/api.h</itemPath>
+        <itemPath>mpi/common.cpp</itemPath>
+        <itemPath>mpi/common.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="Utilities" projectFiles="true">
         <itemPath>Statistics.cpp</itemPath>
@@ -217,6 +227,70 @@
         </ccTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f1</output>
+          <linkerLibItems>
+            <linkerLibStdlibItem>CppUnit</linkerLibStdlibItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
+    </conf>
+    <conf name="Debug_MPI" type="1">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <ccTool>
+          <architecture>2</architecture>
+          <commandlineTool>mpic++</commandlineTool>
+          <incDir>
+            <pElem>/usr/include/mpi</pElem>
+            <pElem>/usr/include</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>MAIN_CORRELATOR_MPI</Elem>
+          </preprocessorList>
+          <warningLevel>2</warningLevel>
+        </ccTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_debug</output>
+          <commandLine>-fopenmp</commandLine>
+        </linkerTool>
+      </compileType>
+      <folder path="TestFiles/f1">
+        <linkerTool>
+          <linkerLibItems>
+            <linkerOptionItem>`pkg-config --libs cppunit`</linkerOptionItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f2">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f2</output>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f3">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f3</output>
           <linkerLibItems>
             <linkerLibStdlibItem>CppUnit</linkerLibStdlibItem>
           </linkerLibItems>

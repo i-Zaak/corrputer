@@ -45,12 +45,17 @@ OBJECTFILES= \
 	${OBJECTDIR}/DataInputIface.o \
 	${OBJECTDIR}/ComputationFramework.o \
 	${OBJECTDIR}/main_mpi.o \
+	${OBJECTDIR}/mpi/Saver.o \
 	${OBJECTDIR}/CorrelationComputer.o \
+	${OBJECTDIR}/DistributedComputationFramework.o \
+	${OBJECTDIR}/mpi/common.o \
 	${OBJECTDIR}/Statistics.o \
 	${OBJECTDIR}/ValueFrame.o \
 	${OBJECTDIR}/ValueContainerGenerator.o \
+	${OBJECTDIR}/mpi/Worker.o \
 	${OBJECTDIR}/lib/swutils.o \
 	${OBJECTDIR}/ValueContainer.o \
+	${OBJECTDIR}/mpi/Coordinator.o \
 	${OBJECTDIR}/SourcePointInfo.o
 
 # Test Directory
@@ -136,10 +141,25 @@ ${OBJECTDIR}/main_mpi.o: main_mpi.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/main_mpi.o main_mpi.cpp
 
+${OBJECTDIR}/mpi/Saver.o: mpi/Saver.cpp 
+	${MKDIR} -p ${OBJECTDIR}/mpi
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/Saver.o mpi/Saver.cpp
+
 ${OBJECTDIR}/CorrelationComputer.o: CorrelationComputer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/CorrelationComputer.o CorrelationComputer.cpp
+
+${OBJECTDIR}/DistributedComputationFramework.o: DistributedComputationFramework.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/DistributedComputationFramework.o DistributedComputationFramework.cpp
+
+${OBJECTDIR}/mpi/common.o: mpi/common.cpp 
+	${MKDIR} -p ${OBJECTDIR}/mpi
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/common.o mpi/common.cpp
 
 ${OBJECTDIR}/Statistics.o: Statistics.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -156,6 +176,11 @@ ${OBJECTDIR}/ValueContainerGenerator.o: ValueContainerGenerator.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueContainerGenerator.o ValueContainerGenerator.cpp
 
+${OBJECTDIR}/mpi/Worker.o: mpi/Worker.cpp 
+	${MKDIR} -p ${OBJECTDIR}/mpi
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/Worker.o mpi/Worker.cpp
+
 ${OBJECTDIR}/lib/swutils.o: lib/swutils.C 
 	${MKDIR} -p ${OBJECTDIR}/lib
 	${RM} $@.d
@@ -165,6 +190,11 @@ ${OBJECTDIR}/ValueContainer.o: ValueContainer.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueContainer.o ValueContainer.cpp
+
+${OBJECTDIR}/mpi/Coordinator.o: mpi/Coordinator.cpp 
+	${MKDIR} -p ${OBJECTDIR}/mpi
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/Coordinator.o mpi/Coordinator.cpp
 
 ${OBJECTDIR}/SourcePointInfo.o: SourcePointInfo.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -349,6 +379,19 @@ ${OBJECTDIR}/main_mpi_nomain.o: ${OBJECTDIR}/main_mpi.o main_mpi.cpp
 	    ${CP} ${OBJECTDIR}/main_mpi.o ${OBJECTDIR}/main_mpi_nomain.o;\
 	fi
 
+${OBJECTDIR}/mpi/Saver_nomain.o: ${OBJECTDIR}/mpi/Saver.o mpi/Saver.cpp 
+	${MKDIR} -p ${OBJECTDIR}/mpi
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/mpi/Saver.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/Saver_nomain.o mpi/Saver.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/mpi/Saver.o ${OBJECTDIR}/mpi/Saver_nomain.o;\
+	fi
+
 ${OBJECTDIR}/CorrelationComputer_nomain.o: ${OBJECTDIR}/CorrelationComputer.o CorrelationComputer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/CorrelationComputer.o`; \
@@ -360,6 +403,32 @@ ${OBJECTDIR}/CorrelationComputer_nomain.o: ${OBJECTDIR}/CorrelationComputer.o Co
 	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/CorrelationComputer_nomain.o CorrelationComputer.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/CorrelationComputer.o ${OBJECTDIR}/CorrelationComputer_nomain.o;\
+	fi
+
+${OBJECTDIR}/DistributedComputationFramework_nomain.o: ${OBJECTDIR}/DistributedComputationFramework.o DistributedComputationFramework.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/DistributedComputationFramework.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/DistributedComputationFramework_nomain.o DistributedComputationFramework.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/DistributedComputationFramework.o ${OBJECTDIR}/DistributedComputationFramework_nomain.o;\
+	fi
+
+${OBJECTDIR}/mpi/common_nomain.o: ${OBJECTDIR}/mpi/common.o mpi/common.cpp 
+	${MKDIR} -p ${OBJECTDIR}/mpi
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/mpi/common.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/common_nomain.o mpi/common.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/mpi/common.o ${OBJECTDIR}/mpi/common_nomain.o;\
 	fi
 
 ${OBJECTDIR}/Statistics_nomain.o: ${OBJECTDIR}/Statistics.o Statistics.cpp 
@@ -401,6 +470,19 @@ ${OBJECTDIR}/ValueContainerGenerator_nomain.o: ${OBJECTDIR}/ValueContainerGenera
 	    ${CP} ${OBJECTDIR}/ValueContainerGenerator.o ${OBJECTDIR}/ValueContainerGenerator_nomain.o;\
 	fi
 
+${OBJECTDIR}/mpi/Worker_nomain.o: ${OBJECTDIR}/mpi/Worker.o mpi/Worker.cpp 
+	${MKDIR} -p ${OBJECTDIR}/mpi
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/mpi/Worker.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/Worker_nomain.o mpi/Worker.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/mpi/Worker.o ${OBJECTDIR}/mpi/Worker_nomain.o;\
+	fi
+
 ${OBJECTDIR}/lib/swutils_nomain.o: ${OBJECTDIR}/lib/swutils.o lib/swutils.C 
 	${MKDIR} -p ${OBJECTDIR}/lib
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/lib/swutils.o`; \
@@ -425,6 +507,19 @@ ${OBJECTDIR}/ValueContainer_nomain.o: ${OBJECTDIR}/ValueContainer.o ValueContain
 	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueContainer_nomain.o ValueContainer.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/ValueContainer.o ${OBJECTDIR}/ValueContainer_nomain.o;\
+	fi
+
+${OBJECTDIR}/mpi/Coordinator_nomain.o: ${OBJECTDIR}/mpi/Coordinator.o mpi/Coordinator.cpp 
+	${MKDIR} -p ${OBJECTDIR}/mpi
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/mpi/Coordinator.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/Coordinator_nomain.o mpi/Coordinator.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/mpi/Coordinator.o ${OBJECTDIR}/mpi/Coordinator_nomain.o;\
 	fi
 
 ${OBJECTDIR}/SourcePointInfo_nomain.o: ${OBJECTDIR}/SourcePointInfo.o SourcePointInfo.cpp 

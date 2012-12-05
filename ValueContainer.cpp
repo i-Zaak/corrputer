@@ -6,6 +6,7 @@
 
 #include <stdexcept>
 
+#include "common.h"
 #include "ValueContainer.h"
 
 ValueContainer::ValueContainer() {
@@ -18,16 +19,19 @@ ValueContainer::ValueContainer(int streamsCount, ValueStream** streams) {
     this->streams = streams;
     
     this->chainedData = new ChainedObject*[this->streamsCount];
+    for (int i = 0; i < this->streamsCount; i++) {
+        this->chainedData[i] = NULL;
+    }
 }
 
 ValueContainer::~ValueContainer() {
     if (this->streams != NULL) {
-        delete this->streams;
+        delete[] this->streams;
     }
     
     if (this->chainedData != NULL) {
         // TODO: free chained pointers
-        delete this->chainedData;
+        delete[] this->chainedData;
     }
 }
 
@@ -38,16 +42,19 @@ void ValueContainer::setStreamsCount(int count)
     // allocate required memory for streams
     if (this->streams != NULL) {
         // TODO: free streams
-        delete this->streams;
+        delete[] this->streams;
     }
     this->streams = new ValueStream*[this->streamsCount];
     
     // allocate array of pointer for chained data
     if (this->chainedData != NULL) {
         // TODO: free chained pointers
-        delete this->chainedData;
+        delete[] this->chainedData;
     }
     this->chainedData = new ChainedObject*[this->streamsCount];
+    for (int i = 0; i < this->streamsCount; i++) {
+        this->chainedData[i] = NULL;
+    }
 }
 
 //==========================================================================
@@ -105,6 +112,10 @@ void ValueContainer::saveHeader(std::ofstream &fout)
 
 void ValueContainer::loadStream(int index, std::ifstream &fin)
 {
+    if (index < 0 || index > this->streamsCount) {
+        throw std::runtime_error("Invalid index");
+    }
+    
     // seek position
     fin.seekg(VALUECONTAINER_FILE_DATAOFFSET + index * this->streamsLength * sizeof(float), std::ios::beg);
     
@@ -118,13 +129,17 @@ void ValueContainer::loadStream(int index, std::ifstream &fin)
     this->streams[index]->assign(values, values + this->streamsLength);
     
     // clear temp memory
-    delete values;
+    delete[] values;
 }
 
 //==========================================================================
 
 void ValueContainer::saveStream(int index, std::ofstream &fout)
 {
+    if (index < 0 || index > this->streamsCount) {
+        throw std::runtime_error("Invalid index");
+    }
+    
     // seek position
     fout.seekp(VALUECONTAINER_FILE_DATAOFFSET + index * this->streamsLength * sizeof(float), std::ios::beg);
     
@@ -137,6 +152,10 @@ void ValueContainer::saveStream(int index, std::ofstream &fout)
 
 void ValueContainer::freeStream(int index)
 {
+    if (index < 0 || index > this->streamsCount) {
+        throw std::runtime_error("Invalid index");
+    }
+    
     ValueStream* vs = this->streams[index];
     
     if (vs == NULL) {
@@ -160,6 +179,9 @@ ChainedObject* ValueContainer::getChainedData(int index)
     if (index < 0 || index > this->streamsCount) {
         throw std::runtime_error("Invalid index");
     }
+    if (this->chainedData == NULL) {
+        throw std::runtime_error("No chained data");
+    }
     return this->chainedData[index];
 }
 
@@ -169,6 +191,9 @@ void ValueContainer::setChainedData(int index, ChainedObject* data)
 {
     if (index < 0 || index > this->streamsCount) {
         throw std::runtime_error("Invalid index");
+    }
+    if (this->chainedData == NULL) {
+        throw std::runtime_error("No chained data");
     }
     this->chainedData[index] = data;
 }

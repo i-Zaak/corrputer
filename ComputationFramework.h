@@ -16,7 +16,7 @@
  */
 class ComputationFramework {
 public:
-    ComputationFramework(std::string fileIn, std::string fileOut, CorrelationComputer* cc);
+    ComputationFramework(std::string* fileIn, std::string* fileOut, CorrelationComputer* cc);
     ComputationFramework(const ComputationFramework& orig);
     virtual ~ComputationFramework();
     
@@ -61,6 +61,13 @@ public:
      * Performs a correlation computation on a currently active block.
      */
     void compute();
+    
+    /**
+     * Returns the input value container.
+     * 
+     * @return 
+     */
+    ValueContainer* getInputValues();
     
 protected:
     // configuration

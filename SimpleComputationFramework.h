@@ -8,7 +8,7 @@
  */
 class SimpleComputationFramework : public ComputationFramework {
 public:
-    SimpleComputationFramework(std::string fileIn, std::string fileOut, CorrelationComputer* cc);
+    SimpleComputationFramework(std::string* fileIn, std::string* fileOut, CorrelationComputer* cc);
     virtual ~SimpleComputationFramework();
     
 protected:
