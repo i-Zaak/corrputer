@@ -1,4 +1,5 @@
 #include "ComputationFramework.h"
+#include "common.h"
 
 ComputationFramework::ComputationFramework(std::string* fileIn, std::string* fileOut, CorrelationComputer* cc) {
     this->fileIn = fileIn;
@@ -20,10 +21,25 @@ void ComputationFramework::open()
     this->vcIn = new ValueContainer();
     this->fin = new std::ifstream(this->fileIn->c_str());
     
+    // check for input file problems
+    if (!this->fin->good()) {
+        char curPath[FILENAME_MAX];
+        getcwd(curPath, FILENAME_MAX);
+        DEBUG_CERR << "File stream is not good! Failed opening input file '"
+                << this->fileIn->c_str() << "' from dir '"
+                << curPath << "'." << std::endl;
+        throw std::runtime_error("Input file stream is not good.");
+    }
+    
     // prepare a universal data container for data output
     this->vcOut = new ValueContainer();
     if (this->fileOut != NULL) {
         this->fout = new std::ofstream(this->fileOut->c_str());
+        // check result
+        if (!this->fin->good()) {
+            DEBUG_CERR << "File stream is not good! Failed opening output file '" << this->fileOut->c_str() << "'." << std::endl;
+            throw std::runtime_error("Output file stream is not good.");
+        }
     } else {
         this->fout = NULL;
     }
@@ -31,16 +47,9 @@ void ComputationFramework::open()
     // load header
     this->vcIn->loadHeader(*fin);
     
-    // compute result header and save it
-    this->vcOut->setStreamsCount(this->vcIn->getStreamsCount()*this->vcIn->getStreamsCount());
-    this->vcOut->setStreamsLength(this->vcIn->getStreamsLength());
-    if (this->fout != NULL) {
-        this->vcOut->saveHeader(*fout);
-    }
-    
     // size of a block
     // TODO: magically guess - based on StreamsLength and available memory
-    this->blockHeight = 80;
+    this->blockHeight = 50;
     this->corelWidth = this->vcIn->getStreamsCount();
     
     // limit block height
@@ -55,6 +64,16 @@ void ComputationFramework::open()
     
     // assign input VC to the correlation computer
     this->corelComp->setData(this->vcIn);
+    
+    // init correlation computer - everything should be configured by now
+    this->corelComp->init();
+    
+    // compute result header and save it
+    this->vcOut->setStreamsCount(this->vcIn->getStreamsCount()*this->vcIn->getStreamsCount());
+    this->vcOut->setStreamsLength(this->corelComp->getOutputLength());
+    if (this->fout != NULL) {
+        this->vcOut->saveHeader(*fout);
+    }
     
     // state init
     this->activeBlock = 0;
@@ -130,6 +149,13 @@ void ComputationFramework::compute()
 ValueContainer* ComputationFramework::getInputValues()
 {
     return this->vcIn;
+}
+
+//==========================================================================
+
+ValueContainer* ComputationFramework::getOutputValues()
+{
+    return this->vcOut;
 }
 
 //==========================================================================

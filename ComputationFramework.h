@@ -69,6 +69,13 @@ public:
      */
     ValueContainer* getInputValues();
     
+    /**
+     * Returns the output value container.
+     * 
+     * @return 
+     */
+    ValueContainer* getOutputValues();
+    
 protected:
     // configuration
     int activeBlock;

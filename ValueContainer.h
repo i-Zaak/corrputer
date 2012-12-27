@@ -171,6 +171,11 @@ private:
     ValueStream** streams;
     
     /**
+     * Are we the owners of the streams memory?
+     */
+    int managedStreams;
+    
+    /**
      * Pointer array chained to this one. The size corresponds to the streams
      * array.
      * 

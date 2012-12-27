@@ -18,5 +18,9 @@ extern "C" {
 #include <iostream>
 #include <stdexcept>
 
+#define DEBUG_CERR std::cerr << "[" << __FILE__ << ":" << __LINE__ << "] "
+
+#include <unistd.h>
+
 #endif	/* COMMON_H */
 

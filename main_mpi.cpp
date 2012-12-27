@@ -36,7 +36,8 @@ int main(int argc, char** argv)
     
     corelComp->setTauMax(1000);
     corelComp->setWindowSize(1000);
-    corelComp->setSubpartLength(100000);
+    corelComp->setStepSize(1000);
+    corelComp->setSubpartLength(10000);
     
     // framework init
     framework = new DistributedComputationFramework(&fileIn, corelComp);
@@ -52,6 +53,17 @@ int main(int argc, char** argv)
         MPI_COUT << "Number of blocks: " << blocks << std::endl;
         MPI_COUT << "Number of streams: " << framework->getInputValues()->getStreamsCount() << std::endl;
         MPI_COUT << "Length of streams: " << framework->getInputValues()->getStreamsLength() << std::endl;
+        MPI_COUT << "Number of output streams: " << framework->getOutputValues()->getStreamsCount() << std::endl;
+        MPI_COUT << "Length of output streams: " << framework->getOutputValues()->getStreamsLength() << std::endl;
+    }
+    
+    // assert enough processes
+    if (mpiSize < 3) {
+        if (mpiRank == 0) {
+            MPI_COUT << " !!! Not enough MPI nodes !!! " << std::endl;
+        }
+        MPI_Finalize();
+        return 3;
     }
     
     // fork processes

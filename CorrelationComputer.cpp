@@ -1,6 +1,6 @@
-/* 
+/*
  * CorrelationComputer
- * 
+ *
  * @author David Nemecek <dejvino at gmail dot com>
  */
 
@@ -12,10 +12,15 @@
 #include <algorithm>
 
 CorrelationComputer::CorrelationComputer() {
+    this->container = NULL;
+    
     this->windowSize = 100;
+    this->windowStep = this->windowSize;
     this->tauMax = 10;
     this->subpartStart = 0;
     this->subpartLength = 0;
+    
+    this->inited = 0;
 }
 
 CorrelationComputer::CorrelationComputer(const CorrelationComputer& orig) {
@@ -24,24 +29,171 @@ CorrelationComputer::CorrelationComputer(const CorrelationComputer& orig) {
 CorrelationComputer::~CorrelationComputer() {
 }
 
+//======================================================================
+// Pre-Init (configuration)
+//======================================================================
+
+int CorrelationComputer::getTauMax()
+{
+    return tauMax;
+}
+
+//======================================================================
+
+void CorrelationComputer::setTauMax(int tauMax)
+{
+    if (inited != 0) {
+        throw std::runtime_error("Already inited, config change is forbidden.");
+    }
+    this->tauMax = tauMax;
+}
+
+//======================================================================
+
+int CorrelationComputer::getWindowSize()
+{
+    return windowSize;
+}
+
+//======================================================================
+
+void CorrelationComputer::setWindowSize(int windowSize)
+{
+    if (inited != 0) {
+        throw std::runtime_error("Already inited, config change is forbidden.");
+    }
+    this->windowSize = windowSize;
+}
+
+//======================================================================
+
+int CorrelationComputer::getStepSize()
+{
+    return windowStep;
+}
+
+//======================================================================
+
+void CorrelationComputer::setStepSize(int stepSize)
+{
+    if (inited != 0) {
+        throw std::runtime_error("Already inited, config change is forbidden.");
+    }
+    this->windowStep = stepSize;
+}
+
+//======================================================================
+
+int CorrelationComputer::getSubpartLength()
+{
+    return subpartLength;
+}
+
+//======================================================================
+
+void CorrelationComputer::setSubpartLength(int subpartLength)
+{
+    if (inited != 0) {
+        throw std::runtime_error("Already inited, config change is forbidden.");
+    }
+    this->subpartLength = subpartLength;
+}
+
+//======================================================================
+
+int CorrelationComputer::getSubpartStart()
+{
+    return subpartStart;
+}
+
+//======================================================================
+
+void CorrelationComputer::setSubpartStart(int subpartStart)
+{
+    if (inited != 0) {
+        throw std::runtime_error("Already inited, config change is forbidden.");
+    }
+    this->subpartStart = subpartStart;
+}
+
+//======================================================================
+
 void CorrelationComputer::setData(ValueContainer* container)
 {
+    if (inited != 0) {
+        throw std::runtime_error("Already inited, config change is forbidden.");
+    }
     this->container = container;
 }
 
+//======================================================================
+// Init
+//======================================================================
+
+void CorrelationComputer::init()
+{
+    if (inited != 0) {
+        throw std::runtime_error("Already inited, cannot re-init.");
+    }
+    inited = 1;
+
+    // compute derived configuration
+    int inDataLength = this->getValues()->getStreamsLength();
+    this->inDataStart = std::max(0, this->subpartStart);
+    this->inDataStop = std::max(inDataStart+1, inDataLength - tauMax - windowSize + 1);
+    if (this->subpartLength > 0) {
+        this->inDataStop = std::min(this->subpartLength, inDataLength - tauMax - windowSize);
+    }
+    if (inDataStart >= inDataStop) {
+        throw std::runtime_error("Invalid subpart configuration.");
+    }
+    int inDataSubpartLength = inDataStop - inDataStart;
+    if (windowStep <= 0) {
+        throw std::runtime_error("Invalid window step size configuration: <= 0.");
+    }
+    this->outDataLength = (inDataSubpartLength - windowSize) / this->windowStep + 1;
+    
+    // perform configuration validation
+    if (tauMax < 0) {
+        throw std::runtime_error("Invalid tau max configuration: < 0.");
+    }
+    if (windowSize <= 0) {
+        throw std::runtime_error("Invalid window size configuration: <= 0.");
+    }
+    if (this->windowSize > inDataLength) {
+        throw std::runtime_error("Invalid window size: must be smaller than data length.");
+    }
+    if (this->windowSize > inDataLength - tauMax) {
+        throw std::runtime_error("Invalid window size: must be smaller than data length - tau max.");
+    }
+}
+
+//======================================================================
+// Post-Init
+//======================================================================
+
+int CorrelationComputer::getOutputLength()
+{
+    if (inited != 1) {
+        throw std::runtime_error("Init not yet performed.");
+    }
+    return this->outDataLength;
+}
+
+//======================================================================
+//======================================================================
+
 ValueContainer* CorrelationComputer::computeAll()
-{   
+{
     int count = this->container->getStreamsCount();
-    
+
     std::cout << "Computing correlations for " << count << " streams..." << std::endl;
-    //ValueStream** streams = new ValueStream*[count * count];
-    
+    ValueStream** streams = new ValueStream*[count * count];
+
     int one;
-    //#pragma omp parallel for
     for (one = 0; one < count; one++) {
         for (int two = 0; two < count; two++) {
-            //streams[one * count + two] = this->computePair(one, two);
-            this->computePair(one, two);
+            streams[one * count + two] = this->computePair(one, two);
             //std::cout << "[" << one << " ; " << two << "] Done." << std::endl;
         }
         std::cout << "[" << one << " ; " << count << "] Done." << std::endl;
@@ -51,14 +203,19 @@ ValueContainer* CorrelationComputer::computeAll()
             return NULL;
         }
     }
-    
+
     std::cout << "All correlations computed." << std::endl;
-    //return new ValueContainer(count * count, streams);
-    return NULL;
+    return new ValueContainer(count * count, streams);
 }
+
+//======================================================================
 
 ValueStream* CorrelationComputer::computePair(int one, int two)
 {
+    if (inited != 1) {
+        throw std::runtime_error("Init not yet performed.");
+    }
+
     /**
      * Gather computation configuration.
      *  - size of floating computation window
@@ -69,37 +226,29 @@ ValueStream* CorrelationComputer::computePair(int one, int two)
      */
     ValueStream* vsOne = this->getValues()->getStream(one);
     ValueStream* vsTwo = this->getValues()->getStream(two);
-    
+
     if (vsOne == NULL || vsTwo == NULL) {
         throw std::runtime_error("Value streams not loaded properly.");
     }
-    
-    int dataLength = std::min(vsOne->size(), vsTwo->size());
-    int tauMax = this->getTauMax();
-    int windowSize = this->getWindowSize();
-    int windowStep = windowSize;
-    
-    int start = std::max(0, this->subpartStart);
-    int stop = std::max(start+1, dataLength - tauMax - windowSize);
-    if (this->subpartLength > 0) {
-        stop = std::min(this->subpartLength, dataLength - tauMax - windowSize);
-    }
-    if (start >= stop) {
-        throw std::runtime_error("Invalid subpart configuration.");
-    }
-    
+
     /**
      * Prepare pre-computable data that could speed-up the correlation comp.
      */
     this->prepareStream(one);
     this->prepareStream(two);
+
+    /**
+     * Load configuration
+     */
+    int start = this->inDataStart;
+    int stop = this->inDataStop;
     
     /**
      * Find the largest correlation for every window position with changing tau
      * values and create the resulting correlation value stream.
      */
     ValueStream* vsCorel = new ValueStream();
-    vsCorel->reserve(stop - start);
+    vsCorel->reserve(this->getOutputLength());
     for (int pos = start; pos < stop; pos += windowStep) {
         float maxCor = 0.0f;
         // try all the tau values
@@ -112,9 +261,11 @@ ValueStream* CorrelationComputer::computePair(int one, int two)
         // save the best value
         vsCorel->push_back(maxCor);
     }
-    
+
     return vsCorel;
 }
+
+//======================================================================
 
 void CorrelationComputer::prepareStream(int index)
 {

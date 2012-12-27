@@ -14,6 +14,7 @@ class CrossCorrelationTest : public CPPUNIT_NS::TestFixture {
     CPPUNIT_TEST_SUITE(CrossCorrelationTest);
 
     CPPUNIT_TEST(testSimple);
+    CPPUNIT_TEST(testNormal);
 
     CPPUNIT_TEST_SUITE_END();
 
@@ -25,6 +26,7 @@ public:
 
 private:
     void testSimple();
+    void testNormal();
 };
 
 #endif	/* CROSSCORRELATIONTEST_H */

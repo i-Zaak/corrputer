@@ -22,38 +22,36 @@ public:
     ValueStream* computePair(int one, int two);
     virtual float computePairValue(int one, int two, int start, int steps, int tau) = 0;
 
-    int getTauMax() const {
-        return tauMax;
-    }
+    //======================================================================
+    // Computation configuration
+    
+    int getTauMax();
+    void setTauMax(int tauMax);
+    
+    int getWindowSize();
+    void setWindowSize(int windowSize);
+    
+    int getStepSize();
+    void setStepSize(int stepSize);
 
-    void setTauMax(int tauMax) {
-        this->tauMax = tauMax;
-    }
+    int getSubpartLength();
+    void setSubpartLength(int subpartLength);
 
-    int getWindowSize() const {
-        return windowSize;
-    }
+    int getSubpartStart();
+    void setSubpartStart(int subpartStart);
 
-    void setWindowSize(int windowSize) {
-        this->windowSize = windowSize;
-    }
-
-    int getSubpartLength() const {
-        return subpartLength;
-    }
-
-    void setSubpartLength(int subpartLength) {
-        this->subpartLength = subpartLength;
-    }
-
-    int getSubpartStart() const {
-        return subpartStart;
-    }
-
-    void setSubpartStart(int subpartStart) {
-        this->subpartStart = subpartStart;
-    }
-
+    //======================================================================
+    
+    /**
+     * Performs initialisations of internal structures. After this call any
+     * configuration changing operations will result in error.
+     */
+    virtual void init();
+    
+    //======================================================================
+    
+    int getOutputLength();
+    
 protected:
     ValueContainer* getValues() {
         return this->container;
@@ -69,9 +67,16 @@ private:
     ValueContainer* container;
     
     int windowSize;
+    int windowStep;
     int tauMax;
     int subpartStart;
     int subpartLength;
+    
+    int inited;
+    
+    int inDataStart;
+    int inDataStop;
+    int outDataLength;
 };
 
 #endif	/* CORRELATIONCOMPUTER_H */

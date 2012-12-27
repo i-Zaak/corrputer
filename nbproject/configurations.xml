@@ -78,6 +78,14 @@
         <itemPath>tests/CrossCorrelationTest.h</itemPath>
         <itemPath>tests/CrossCorrelationTestRunner.cpp</itemPath>
       </logicalFolder>
+      <logicalFolder name="f4"
+                     displayName="DistributedComputationFrameworkTest"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/DistributedComputationFrameworkTest.cpp</itemPath>
+        <itemPath>tests/DistributedComputationFrameworkTest.h</itemPath>
+        <itemPath>tests/DistributedComputationFrameworkTestRunner.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f2"
                      displayName="RunningVarianceTest"
                      projectFiles="true"
@@ -236,7 +244,7 @@
     <conf name="Debug_MPI" type="1">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
-        <compilerSet>default</compilerSet>
+        <compilerSet>GNU|GNU</compilerSet>
       </toolsSet>
       <compileType>
         <ccTool>
@@ -253,7 +261,6 @@
         </ccTool>
         <linkerTool>
           <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_debug</output>
-          <commandLine>-fopenmp</commandLine>
         </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
@@ -291,6 +298,24 @@
         </ccTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f3</output>
+          <linkerLibItems>
+            <linkerLibStdlibItem>CppUnit</linkerLibStdlibItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f4">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f4</output>
           <linkerLibItems>
             <linkerLibStdlibItem>CppUnit</linkerLibStdlibItem>
           </linkerLibItems>

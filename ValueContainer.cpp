@@ -12,11 +12,15 @@
 ValueContainer::ValueContainer() {
     this->streams = NULL;
     this->chainedData = NULL;
+    this->managedStreams = 1;
 }
 
 ValueContainer::ValueContainer(int streamsCount, ValueStream** streams) {
     this->streamsCount = streamsCount;
     this->streams = streams;
+    this->managedStreams = 0;
+    
+    this->streamsLength = streams[0]->size();
     
     this->chainedData = new ChainedObject*[this->streamsCount];
     for (int i = 0; i < this->streamsCount; i++) {
@@ -25,7 +29,7 @@ ValueContainer::ValueContainer(int streamsCount, ValueStream** streams) {
 }
 
 ValueContainer::~ValueContainer() {
-    if (this->streams != NULL) {
+    if (this->streams != NULL && this->managedStreams == 1) {
         delete[] this->streams;
     }
     
@@ -45,6 +49,7 @@ void ValueContainer::setStreamsCount(int count)
         delete[] this->streams;
     }
     this->streams = new ValueStream*[this->streamsCount];
+    this->managedStreams = 1;
     
     // allocate array of pointer for chained data
     if (this->chainedData != NULL) {
@@ -64,25 +69,33 @@ void ValueContainer::loadHeader(std::ifstream &fin)
     // reset position
     fin.seekg(0, std::ios::beg);
     
+    if (!fin.good()) {
+        DEBUG_CERR << "fin is not good!" << std::endl;
+        throw std::runtime_error("Input file stream is not good.");
+    }
+    
     // version check
-    int version;
+    int version = 0;
     fin.read((char*)&version, 4);
     if (version != VALUECONTAINER_FILE_VERSION) {
+        DEBUG_CERR << "Version: " << version << std::endl;
         throw std::runtime_error("Invalid ValueContainer file version.");
     }
     
     // streams count
-    int streamsCount;
+    int streamsCount = 0;
     fin.read((char*)&streamsCount, 4);
     if (streamsCount < 1) {
-        throw std::runtime_error("Invalid ValueContainer streams count.");
+        DEBUG_CERR << "Count: " << streamsCount << std::endl;
+        throw std::runtime_error("Invalid ValueContainer streams count, must be >= 1.");
     }
     
     // streams length
-    int streamsLength;
+    int streamsLength = 0;
     fin.read((char*)&streamsLength, 4);
     if (streamsLength < 1) {
-        throw std::runtime_error("Invalid ValueContainer streams length.");
+        DEBUG_CERR << "Length: " << streamsLength << std::endl;
+        throw std::runtime_error("Invalid ValueContainer streams length, must be >= 1.");
     }
     
     // save header values
@@ -99,12 +112,15 @@ void ValueContainer::saveHeader(std::ofstream &fout)
     
     // version
     int version = VALUECONTAINER_FILE_VERSION;
+    printf("Version: %d\n", version);
     fout.write((char*)&version, 4);
     
     // streams count
+    printf("Streams count: %d\n", version);
     fout.write((char*)&this->streamsCount, 4);
     
     // streams length
+    printf("Streams length: %d\n", version);
     fout.write((char*)&this->streamsLength, 4);
 }
 
@@ -127,6 +143,7 @@ void ValueContainer::loadStream(int index, std::ifstream &fin)
     this->streams[index] = new ValueStream();
     this->streams[index]->reserve(this->streamsLength);
     this->streams[index]->assign(values, values + this->streamsLength);
+    this->managedStreams = 1;
     
     // clear temp memory
     delete[] values;
@@ -176,7 +193,7 @@ void ValueContainer::freeStream(int index)
 
 ChainedObject* ValueContainer::getChainedData(int index)
 {
-    if (index < 0 || index > this->streamsCount) {
+    if (index < 0 || index >= this->streamsCount) {
         throw std::runtime_error("Invalid index");
     }
     if (this->chainedData == NULL) {
@@ -189,7 +206,7 @@ ChainedObject* ValueContainer::getChainedData(int index)
 
 void ValueContainer::setChainedData(int index, ChainedObject* data)
 {
-    if (index < 0 || index > this->streamsCount) {
+    if (index < 0 || index >= this->streamsCount) {
         throw std::runtime_error("Invalid index");
     }
     if (this->chainedData == NULL) {

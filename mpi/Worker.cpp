@@ -31,11 +31,19 @@ void runWorker()
         // forward active block to our framework
         framework->setActiveBlock(reserve);
 
-        // TODO: compute!
+        // compute!
         framework->compute();
         
-        // TODO: output data
+        // output data
         MPI_COUT << "Worker outputting: " << reserve << std::endl;
+        char* blockData;
+        int blockDataSize;
+        framework->exportBlockData(&blockData, &blockDataSize);
+        MPI_COUT << "Worker sending data..." << std::endl;
+        MPI_Send(blockData, blockDataSize,
+                MPI_BYTE, 1, MPI_TAG_OUTPUTBLOCK, MPI_COMM_WORLD);
+        delete[] blockData;
+        MPI_COUT << "Worker finished sending data." << std::endl;
         
         // move to another block
         framework->nextBlock();

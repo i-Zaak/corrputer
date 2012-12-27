@@ -41,16 +41,16 @@ OBJECTFILES= \
 	${OBJECTDIR}/CrossCorrelationComputer.o \
 	${OBJECTDIR}/NiftiInput.o \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/SourceInfo.o \
 	${OBJECTDIR}/DataInputIface.o \
+	${OBJECTDIR}/SourceInfo.o \
 	${OBJECTDIR}/ComputationFramework.o \
 	${OBJECTDIR}/main_mpi.o \
 	${OBJECTDIR}/mpi/Saver.o \
 	${OBJECTDIR}/CorrelationComputer.o \
 	${OBJECTDIR}/DistributedComputationFramework.o \
 	${OBJECTDIR}/mpi/common.o \
-	${OBJECTDIR}/Statistics.o \
 	${OBJECTDIR}/ValueFrame.o \
+	${OBJECTDIR}/Statistics.o \
 	${OBJECTDIR}/ValueContainerGenerator.o \
 	${OBJECTDIR}/mpi/Worker.o \
 	${OBJECTDIR}/lib/swutils.o \
@@ -63,6 +63,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 
 # Test Files
 TESTFILES= \
+	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver
@@ -121,15 +122,15 @@ ${OBJECTDIR}/main.o: main.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
-${OBJECTDIR}/SourceInfo.o: SourceInfo.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/SourceInfo.o SourceInfo.cpp
-
 ${OBJECTDIR}/DataInputIface.o: DataInputIface.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/DataInputIface.o DataInputIface.cpp
+
+${OBJECTDIR}/SourceInfo.o: SourceInfo.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/SourceInfo.o SourceInfo.cpp
 
 ${OBJECTDIR}/ComputationFramework.o: ComputationFramework.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -161,15 +162,15 @@ ${OBJECTDIR}/mpi/common.o: mpi/common.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/common.o mpi/common.cpp
 
-${OBJECTDIR}/Statistics.o: Statistics.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/Statistics.o Statistics.cpp
-
 ${OBJECTDIR}/ValueFrame.o: ValueFrame.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp
+
+${OBJECTDIR}/Statistics.o: Statistics.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/Statistics.o Statistics.cpp
 
 ${OBJECTDIR}/ValueContainerGenerator.o: ValueContainerGenerator.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -210,6 +211,10 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/CrossC
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
 
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/DistributedComputationFrameworkTest.o ${TESTDIR}/tests/DistributedComputationFrameworkTestRunner.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
+
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/RunningVarianceTest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
@@ -229,6 +234,18 @@ ${TESTDIR}/tests/CrossCorrelationTestRunner.o: tests/CrossCorrelationTestRunner.
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${TESTDIR}/tests/CrossCorrelationTestRunner.o tests/CrossCorrelationTestRunner.cpp
+
+
+${TESTDIR}/tests/DistributedComputationFrameworkTest.o: tests/DistributedComputationFrameworkTest.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${TESTDIR}/tests/DistributedComputationFrameworkTest.o tests/DistributedComputationFrameworkTest.cpp
+
+
+${TESTDIR}/tests/DistributedComputationFrameworkTestRunner.o: tests/DistributedComputationFrameworkTestRunner.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${TESTDIR}/tests/DistributedComputationFrameworkTestRunner.o tests/DistributedComputationFrameworkTestRunner.cpp
 
 
 ${TESTDIR}/tests/RunningVarianceTest.o: tests/RunningVarianceTest.cpp 
@@ -327,19 +344,6 @@ ${OBJECTDIR}/main_nomain.o: ${OBJECTDIR}/main.o main.cpp
 	    ${CP} ${OBJECTDIR}/main.o ${OBJECTDIR}/main_nomain.o;\
 	fi
 
-${OBJECTDIR}/SourceInfo_nomain.o: ${OBJECTDIR}/SourceInfo.o SourceInfo.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/SourceInfo.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/SourceInfo_nomain.o SourceInfo.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/SourceInfo.o ${OBJECTDIR}/SourceInfo_nomain.o;\
-	fi
-
 ${OBJECTDIR}/DataInputIface_nomain.o: ${OBJECTDIR}/DataInputIface.o DataInputIface.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/DataInputIface.o`; \
@@ -351,6 +355,19 @@ ${OBJECTDIR}/DataInputIface_nomain.o: ${OBJECTDIR}/DataInputIface.o DataInputIfa
 	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/DataInputIface_nomain.o DataInputIface.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/DataInputIface.o ${OBJECTDIR}/DataInputIface_nomain.o;\
+	fi
+
+${OBJECTDIR}/SourceInfo_nomain.o: ${OBJECTDIR}/SourceInfo.o SourceInfo.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/SourceInfo.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/SourceInfo_nomain.o SourceInfo.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/SourceInfo.o ${OBJECTDIR}/SourceInfo_nomain.o;\
 	fi
 
 ${OBJECTDIR}/ComputationFramework_nomain.o: ${OBJECTDIR}/ComputationFramework.o ComputationFramework.cpp 
@@ -431,19 +448,6 @@ ${OBJECTDIR}/mpi/common_nomain.o: ${OBJECTDIR}/mpi/common.o mpi/common.cpp
 	    ${CP} ${OBJECTDIR}/mpi/common.o ${OBJECTDIR}/mpi/common_nomain.o;\
 	fi
 
-${OBJECTDIR}/Statistics_nomain.o: ${OBJECTDIR}/Statistics.o Statistics.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/Statistics.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/Statistics_nomain.o Statistics.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/Statistics.o ${OBJECTDIR}/Statistics_nomain.o;\
-	fi
-
 ${OBJECTDIR}/ValueFrame_nomain.o: ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/ValueFrame.o`; \
@@ -455,6 +459,19 @@ ${OBJECTDIR}/ValueFrame_nomain.o: ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp
 	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueFrame_nomain.o ValueFrame.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/ValueFrame.o ${OBJECTDIR}/ValueFrame_nomain.o;\
+	fi
+
+${OBJECTDIR}/Statistics_nomain.o: ${OBJECTDIR}/Statistics.o Statistics.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/Statistics.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/Statistics_nomain.o Statistics.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/Statistics.o ${OBJECTDIR}/Statistics_nomain.o;\
 	fi
 
 ${OBJECTDIR}/ValueContainerGenerator_nomain.o: ${OBJECTDIR}/ValueContainerGenerator.o ValueContainerGenerator.cpp 
@@ -539,6 +556,7 @@ ${OBJECTDIR}/SourcePointInfo_nomain.o: ${OBJECTDIR}/SourcePointInfo.o SourcePoin
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
+	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
