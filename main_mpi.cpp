@@ -1,5 +1,3 @@
-#ifdef MAIN_CORRELATOR_MPI
-
 #include "mpi/common.h"
 #include "mpi/api.h"
 
@@ -18,6 +16,8 @@ DistributedComputationFramework* framework;
 #define CONFIG_SECTION_INPUT "Input"
 #define CONFIG_SECTION_OUTPUT "Output"
 #define CONFIG_SECTION_CORRELATION "Correlation"
+
+#ifdef MAIN_CORRELATOR_MPI
 
 /*
  * 

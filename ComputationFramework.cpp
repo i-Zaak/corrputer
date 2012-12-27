@@ -36,7 +36,7 @@ void ComputationFramework::open()
     if (this->fileOut != NULL) {
         this->fout = new std::ofstream(this->fileOut->c_str());
         // check result
-        if (!this->fin->good()) {
+        if (!this->fout->good()) {
             DEBUG_CERR << "File stream is not good! Failed opening output file '" << this->fileOut->c_str() << "'." << std::endl;
             throw std::runtime_error("Output file stream is not good.");
         }

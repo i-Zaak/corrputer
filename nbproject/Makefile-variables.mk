@@ -38,6 +38,14 @@ CND_ARTIFACT_PATH_Debug_MPI=dist/Debug_MPI/GNU-Linux-x86/masterserver_debug
 CND_PACKAGE_DIR_Debug_MPI=dist/Debug_MPI/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Debug_MPI=masterserver.tar
 CND_PACKAGE_PATH_Debug_MPI=dist/Debug_MPI/GNU-Linux-x86/package/masterserver.tar
+# FrameContainerGenerator configuration
+CND_PLATFORM_FrameContainerGenerator=GNU-Linux-x86
+CND_ARTIFACT_DIR_FrameContainerGenerator=dist/FrameContainerGenerator/GNU-Linux-x86
+CND_ARTIFACT_NAME_FrameContainerGenerator=vcgen
+CND_ARTIFACT_PATH_FrameContainerGenerator=dist/FrameContainerGenerator/GNU-Linux-x86/vcgen
+CND_PACKAGE_DIR_FrameContainerGenerator=dist/FrameContainerGenerator/GNU-Linux-x86/package
+CND_PACKAGE_NAME_FrameContainerGenerator=masterserver.tar
+CND_PACKAGE_PATH_FrameContainerGenerator=dist/FrameContainerGenerator/GNU-Linux-x86/package/masterserver.tar
 #
 # include compiler specific variables
 #

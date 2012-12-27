@@ -48,6 +48,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/mpi/Saver.o \
 	${OBJECTDIR}/CorrelationComputer.o \
 	${OBJECTDIR}/DistributedComputationFramework.o \
+	${OBJECTDIR}/FrameContainerGenerator.o \
 	${OBJECTDIR}/mpi/common.o \
 	${OBJECTDIR}/ValueFrame.o \
 	${OBJECTDIR}/Statistics.o \
@@ -92,7 +93,7 @@ LDLIBSOPTIONS=
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_debug: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_debug ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	mpic++ -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_debug ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/SimpleComputationFramework.o: SimpleComputationFramework.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -158,6 +159,11 @@ ${OBJECTDIR}/DistributedComputationFramework.o: DistributedComputationFramework.
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I/usr/include/mpi -I/usr/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/DistributedComputationFramework.o DistributedComputationFramework.cpp
+
+${OBJECTDIR}/FrameContainerGenerator.o: FrameContainerGenerator.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I/usr/include/mpi -I/usr/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/FrameContainerGenerator.o FrameContainerGenerator.cpp
 
 ${OBJECTDIR}/mpi/common.o: mpi/common.cpp 
 	${MKDIR} -p ${OBJECTDIR}/mpi
@@ -456,6 +462,19 @@ ${OBJECTDIR}/DistributedComputationFramework_nomain.o: ${OBJECTDIR}/DistributedC
 	    $(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I/usr/include/mpi -I/usr/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/DistributedComputationFramework_nomain.o DistributedComputationFramework.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/DistributedComputationFramework.o ${OBJECTDIR}/DistributedComputationFramework_nomain.o;\
+	fi
+
+${OBJECTDIR}/FrameContainerGenerator_nomain.o: ${OBJECTDIR}/FrameContainerGenerator.o FrameContainerGenerator.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/FrameContainerGenerator.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I/usr/include/mpi -I/usr/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/FrameContainerGenerator_nomain.o FrameContainerGenerator.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/FrameContainerGenerator.o ${OBJECTDIR}/FrameContainerGenerator_nomain.o;\
 	fi
 
 ${OBJECTDIR}/mpi/common_nomain.o: ${OBJECTDIR}/mpi/common.o mpi/common.cpp 

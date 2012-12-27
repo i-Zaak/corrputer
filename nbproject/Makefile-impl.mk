@@ -31,7 +31,7 @@ DEFAULTCONF=Debug
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Debug Release ValueContainerGenerator Debug_MPI 
+ALLCONFS=Debug Release ValueContainerGenerator Debug_MPI FrameContainerGenerator 
 
 
 # build

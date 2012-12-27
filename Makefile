@@ -119,7 +119,9 @@ help: .help-post
 .help-post: .help-impl
 # Add your post 'help' code here...
 
-
+# Count lines
+cl:
+	wc -l *.cpp *.h mpi/*.cpp mpi/*.h tests/*.cpp tests/*.h
 
 # include project implementation makefile
 include nbproject/Makefile-impl.mk

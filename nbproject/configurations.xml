@@ -62,6 +62,7 @@
         <itemPath>ValueStream.cpp</itemPath>
         <itemPath>ValueStream.h</itemPath>
       </logicalFolder>
+      <itemPath>FrameContainerGenerator.cpp</itemPath>
       <itemPath>Makefile</itemPath>
       <itemPath>ValueContainerGenerator.cpp</itemPath>
       <itemPath>common.h</itemPath>
@@ -218,6 +219,7 @@
         </cTool>
         <ccTool>
           <architecture>2</architecture>
+          <commandlineTool>mpic++</commandlineTool>
           <preprocessorList>
             <Elem>MAIN_VALUE_CONTAINER_GENERATOR</Elem>
           </preprocessorList>
@@ -230,6 +232,7 @@
         </asmTool>
         <linkerTool>
           <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/vcgen</output>
+          <commandlineTool>mpic++</commandlineTool>
         </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
@@ -271,6 +274,7 @@
         </ccTool>
         <linkerTool>
           <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_debug</output>
+          <commandlineTool>mpic++</commandlineTool>
         </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
@@ -344,6 +348,52 @@
         </ccTool>
         <linkerTool>
           <output>${TESTDIR}/TestFiles/f5</output>
+        </linkerTool>
+      </folder>
+    </conf>
+    <conf name="FrameContainerGenerator" type="1">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <developmentMode>6</developmentMode>
+        </cTool>
+        <ccTool>
+          <architecture>2</architecture>
+          <commandlineTool>mpic++</commandlineTool>
+          <preprocessorList>
+            <Elem>MAIN_FRAME_CONTAINER_GENERATOR</Elem>
+          </preprocessorList>
+        </ccTool>
+        <fortranCompilerTool>
+          <developmentMode>5</developmentMode>
+        </fortranCompilerTool>
+        <asmTool>
+          <developmentMode>5</developmentMode>
+        </asmTool>
+        <linkerTool>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/vcgen</output>
+          <commandlineTool>mpic++</commandlineTool>
+        </linkerTool>
+      </compileType>
+      <folder path="TestFiles/f1">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f1</output>
+          <linkerLibItems>
+            <linkerLibStdlibItem>CppUnit</linkerLibStdlibItem>
+          </linkerLibItems>
         </linkerTool>
       </folder>
     </conf>
