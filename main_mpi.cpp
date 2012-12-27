@@ -6,12 +6,18 @@
 #include "CrossCorrelationComputer.h"
 #include "DistributedComputationFramework.h"
 
+#include "ConfigFile.h"
+
 int mpiRank;
 int mpiSize;
 
 int blocks;
 CorrelationComputer* corelComp;
 DistributedComputationFramework* framework;
+
+#define CONFIG_SECTION_INPUT "Input"
+#define CONFIG_SECTION_OUTPUT "Output"
+#define CONFIG_SECTION_CORRELATION "Correlation"
 
 /*
  * 
@@ -24,27 +30,34 @@ int main(int argc, char** argv)
     MPI_Comm_rank(MPI_COMM_WORLD, &mpiRank);
     MPI_Comm_size(MPI_COMM_WORLD, &mpiSize);
     
-    // TODO: incorporate command line arguments
-    std::string fileIn("montazr11.vc");
+    // load configuration file
+    if (argc != 2) {
+        if (mpiRank == 0) {
+            std::cerr << "Usage: config_file" << std::endl;
+        }
+        MPI_Finalize();
+        return 1;
+    }
+    ConfigFile config(argv[1]);
+    
+    std::string fileIn(config.Value(CONFIG_SECTION_INPUT, "filename"));
     std::string* fileOut = NULL;
     
     // Saver process has file output
+    std::string outputFilename = config.Value(CONFIG_SECTION_OUTPUT, "filename");
     if (mpiRank == 1) {
-        fileOut = new std::string("montazr11.corel.vc");
+        fileOut = new std::string(outputFilename);
     }
     
     // corel init
+    // TODO: type based on config
     corelComp = new CrossCorrelationComputer();
-        
-    /*corelComp->setTauMax(10);
-    corelComp->setWindowSize(100);
-    corelComp->setSubpartLength(1000);*/
     
-    // TODO: load from config / command line
-    corelComp->setTauMax(1000);
-    corelComp->setWindowSize(1000);
-    corelComp->setStepSize(1000);
-    corelComp->setSubpartLength(10000);
+    corelComp->setTauMax(atoi(config.Value(CONFIG_SECTION_CORRELATION, "tau_max").c_str()));
+    corelComp->setWindowSize(atoi(config.Value(CONFIG_SECTION_CORRELATION, "window_size").c_str()));
+    corelComp->setStepSize(atoi(config.Value(CONFIG_SECTION_CORRELATION, "window_step").c_str()));
+    corelComp->setSubpartStart(atoi(config.Value(CONFIG_SECTION_CORRELATION, "subpart_start", "0").c_str()));
+    corelComp->setSubpartLength(atoi(config.Value(CONFIG_SECTION_CORRELATION, "subpart_length", "0").c_str()));
     
     // framework init
     framework = new DistributedComputationFramework(&fileIn, fileOut, corelComp);
@@ -55,7 +68,9 @@ int main(int argc, char** argv)
     
     // info print
     if (mpiRank == 0) {
+        MPI_COUT << " --------------CONFIGURATION---------------- " << std::endl;
         MPI_COUT << "Input file: " << fileIn << std::endl;
+        MPI_COUT << "Output file: " << outputFilename << std::endl;
         MPI_COUT << "Number of processes: " << mpiSize << std::endl;
         MPI_COUT << "Number of blocks: " << blocks << std::endl;
         MPI_COUT << "Number of streams: " << framework->getInputValues()->getStreamsCount() << std::endl;
@@ -65,6 +80,7 @@ int main(int argc, char** argv)
         MPI_COUT << "Tau max: " << corelComp->getTauMax() << std::endl;
         MPI_COUT << "Window size: " << corelComp->getWindowSize() << std::endl;
         MPI_COUT << "Window step: " << corelComp->getStepSize() << std::endl;
+        MPI_COUT << " ------------------------------------------- " << std::endl;
     }
     
     // assert enough processes
@@ -75,6 +91,8 @@ int main(int argc, char** argv)
         MPI_Finalize();
         return 3;
     }
+    
+    MPI_Barrier(MPI_COMM_WORLD);
     
     // fork processes
     switch (mpiRank) {

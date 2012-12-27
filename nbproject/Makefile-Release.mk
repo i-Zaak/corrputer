@@ -53,6 +53,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/Statistics.o \
 	${OBJECTDIR}/ValueContainerGenerator.o \
 	${OBJECTDIR}/mpi/Worker.o \
+	${OBJECTDIR}/_ext/126195727/ConfigFile.o \
 	${OBJECTDIR}/lib/swutils.o \
 	${OBJECTDIR}/ValueContainer.o \
 	${OBJECTDIR}/mpi/Coordinator.o \
@@ -63,6 +64,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 
 # Test Files
 TESTFILES= \
+	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
@@ -182,6 +184,11 @@ ${OBJECTDIR}/mpi/Worker.o: mpi/Worker.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/Worker.o mpi/Worker.cpp
 
+${OBJECTDIR}/_ext/126195727/ConfigFile.o: /media/shared/diplomka/masterserver/ConfigFile.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/126195727
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/126195727/ConfigFile.o /media/shared/diplomka/masterserver/ConfigFile.cpp
+
 ${OBJECTDIR}/lib/swutils.o: lib/swutils.C 
 	${MKDIR} -p ${OBJECTDIR}/lib
 	${RM} $@.d
@@ -207,6 +214,10 @@ ${OBJECTDIR}/SourcePointInfo.o: SourcePointInfo.cpp
 
 # Build Test Targets
 .build-tests-conf: .build-conf ${TESTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/_ext/1288231903/ConfigFileTest.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
+
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/CrossCorrelationTest.o ${TESTDIR}/tests/CrossCorrelationTestRunner.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
@@ -222,6 +233,12 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/Runnin
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/ValueContainerSerializationTest.o ${TESTDIR}/tests/testrunner.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
+
+
+${TESTDIR}/_ext/1288231903/ConfigFileTest.o: /media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp 
+	${MKDIR} -p ${TESTDIR}/_ext/1288231903
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/1288231903/ConfigFileTest.o /media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp
 
 
 ${TESTDIR}/tests/CrossCorrelationTest.o: tests/CrossCorrelationTest.cpp 
@@ -506,6 +523,19 @@ ${OBJECTDIR}/mpi/Worker_nomain.o: ${OBJECTDIR}/mpi/Worker.o mpi/Worker.cpp
 	    ${CP} ${OBJECTDIR}/mpi/Worker.o ${OBJECTDIR}/mpi/Worker_nomain.o;\
 	fi
 
+${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o: ${OBJECTDIR}/_ext/126195727/ConfigFile.o /media/shared/diplomka/masterserver/ConfigFile.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/126195727
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/126195727/ConfigFile.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O2 -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o /media/shared/diplomka/masterserver/ConfigFile.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/_ext/126195727/ConfigFile.o ${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o;\
+	fi
+
 ${OBJECTDIR}/lib/swutils_nomain.o: ${OBJECTDIR}/lib/swutils.o lib/swutils.C 
 	${MKDIR} -p ${OBJECTDIR}/lib
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/lib/swutils.o`; \
@@ -562,6 +592,7 @@ ${OBJECTDIR}/SourcePointInfo_nomain.o: ${OBJECTDIR}/SourcePointInfo.o SourcePoin
 .test-conf:
 	@if [ "${TEST}" = "" ]; \
 	then  \
+	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \

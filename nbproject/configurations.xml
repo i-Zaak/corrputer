@@ -45,6 +45,8 @@
         <itemPath>mpi/common.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="Utilities" projectFiles="true">
+        <itemPath>/media/shared/diplomka/masterserver/ConfigFile.cpp</itemPath>
+        <itemPath>/media/shared/diplomka/masterserver/ConfigFile.h</itemPath>
         <itemPath>Statistics.cpp</itemPath>
         <itemPath>Statistics.h</itemPath>
       </logicalFolder>
@@ -70,6 +72,12 @@
                    displayName="Test Files"
                    projectFiles="false"
                    kind="TEST_LOGICAL_FOLDER">
+      <logicalFolder name="f5"
+                     displayName="ConfigFileTest"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>/media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f3"
                      displayName="CrossCorrelationTest"
                      projectFiles="true"
@@ -321,6 +329,21 @@
           <linkerLibItems>
             <linkerLibStdlibItem>CppUnit</linkerLibStdlibItem>
           </linkerLibItems>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f5">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f5</output>
         </linkerTool>
       </folder>
     </conf>
