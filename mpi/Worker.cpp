@@ -40,6 +40,7 @@ void runWorker()
         int blockDataSize;
         framework->exportBlockData(&blockData, &blockDataSize);
         MPI_COUT << "Worker sending data..." << std::endl;
+        MPI_Send(&blockDataSize, 1, MPI_INT, 1, MPI_TAG_PREPAREBLOCK, MPI_COMM_WORLD);
         MPI_Send(blockData, blockDataSize,
                 MPI_BYTE, 1, MPI_TAG_OUTPUTBLOCK, MPI_COMM_WORLD);
         delete[] blockData;

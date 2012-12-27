@@ -26,10 +26,6 @@ void runSaver()
 {   
     MPI_PRINTF("Saver starting.\n");
     
-    // compute size of data that is to be received
-    int blockPartSize = (framework->getOutputValues()->getStreamsLength() * sizeof(float));
-    int outputBlockPartSize = blockPartSize + sizeof(int);
-    
     // fork the Writer task
     WriterJob* writerJob = new WriterJob;
     writerJob->blocksCount = blocks;
@@ -43,11 +39,10 @@ void runSaver()
     MPI_Status status;
     for (int processed = 0; processed < blocks; processed++) {
         // wait for a Prepare! request
-        int blockParts = 0;
-        MPI_Recv(&blockParts, 1, MPI_INT, MPI_ANY_SOURCE, MPI_TAG_PREPAREBLOCK, MPI_COMM_WORLD, &status);
+        int msgSize = 0;
+        MPI_Recv(&msgSize, 1, MPI_INT, MPI_ANY_SOURCE, MPI_TAG_PREPAREBLOCK, MPI_COMM_WORLD, &status);
         
         // reserve memory block based on the request
-        int msgSize = outputBlockPartSize * blockParts;
         char* msg = (char*)malloc(msgSize);
         
         // wait for an Output! command with data from the previous sender
@@ -61,6 +56,8 @@ void runSaver()
         writerJob->queue->push_back(new BlocksQueueEntry(msg, msgSize));
         // </CRITICAL_SECTION>
         pthread_mutex_unlock(&writerJob->queueLock);
+        
+        MPI_PRINTF("Global progress: %3d%\n", processed * 100 / (blocks-1));
     }
     
     // join the Writer task again
@@ -98,9 +95,12 @@ void* runWriter(void* arg)
         
         // import the data
         framework->importBlockData(entry->first, entry->second);
+        //MPI_COUT << "Writer: block #" << block << " - import complete." << std::endl;
         
         // free memory allocated in the Saver thread
         free(entry->first);
         delete entry;
     }
+    
+    return NULL;
 }

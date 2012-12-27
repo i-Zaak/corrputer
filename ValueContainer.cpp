@@ -112,15 +112,15 @@ void ValueContainer::saveHeader(std::ofstream &fout)
     
     // version
     int version = VALUECONTAINER_FILE_VERSION;
-    printf("Version: %d\n", version);
+    //printf("Version: %d\n", version);
     fout.write((char*)&version, 4);
     
     // streams count
-    printf("Streams count: %d\n", version);
+    //printf("Streams count: %d\n", this->streamsCount);
     fout.write((char*)&this->streamsCount, 4);
     
     // streams length
-    printf("Streams length: %d\n", version);
+    //printf("Streams length: %d\n", this->streamsLength);
     fout.write((char*)&this->streamsLength, 4);
 }
 

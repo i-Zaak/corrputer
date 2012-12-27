@@ -62,6 +62,9 @@ int main(int argc, char** argv)
         MPI_COUT << "Length of streams: " << framework->getInputValues()->getStreamsLength() << std::endl;
         MPI_COUT << "Number of output streams: " << framework->getOutputValues()->getStreamsCount() << std::endl;
         MPI_COUT << "Length of output streams: " << framework->getOutputValues()->getStreamsLength() << std::endl;
+        MPI_COUT << "Tau max: " << corelComp->getTauMax() << std::endl;
+        MPI_COUT << "Window size: " << corelComp->getWindowSize() << std::endl;
+        MPI_COUT << "Window step: " << corelComp->getStepSize() << std::endl;
     }
     
     // assert enough processes
