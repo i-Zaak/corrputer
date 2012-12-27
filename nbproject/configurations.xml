@@ -85,6 +85,8 @@
         <itemPath>tests/DistributedComputationFrameworkTest.cpp</itemPath>
         <itemPath>tests/DistributedComputationFrameworkTest.h</itemPath>
         <itemPath>tests/DistributedComputationFrameworkTestRunner.cpp</itemPath>
+        <itemPath>tests/TestedDistributedComputationFramework.cpp</itemPath>
+        <itemPath>tests/TestedDistributedComputationFramework.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f2"
                      displayName="RunningVarianceTest"

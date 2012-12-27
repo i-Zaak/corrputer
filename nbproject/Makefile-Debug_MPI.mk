@@ -211,7 +211,7 @@ ${TESTDIR}/TestFiles/f3: ${TESTDIR}/tests/CrossCorrelationTest.o ${TESTDIR}/test
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f3 $^ ${LDLIBSOPTIONS} -lcppunit 
 
-${TESTDIR}/TestFiles/f4: ${TESTDIR}/tests/DistributedComputationFrameworkTest.o ${TESTDIR}/tests/DistributedComputationFrameworkTestRunner.o ${OBJECTFILES:%.o=%_nomain.o}
+${TESTDIR}/TestFiles/f4: ${TESTDIR}/tests/DistributedComputationFrameworkTest.o ${TESTDIR}/tests/DistributedComputationFrameworkTestRunner.o ${TESTDIR}/tests/TestedDistributedComputationFramework.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f4 $^ ${LDLIBSOPTIONS} -lcppunit 
 
@@ -246,6 +246,12 @@ ${TESTDIR}/tests/DistributedComputationFrameworkTestRunner.o: tests/DistributedC
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
 	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I. -I/usr/include/mpi -I/usr/include -MMD -MP -MF $@.d -o ${TESTDIR}/tests/DistributedComputationFrameworkTestRunner.o tests/DistributedComputationFrameworkTestRunner.cpp
+
+
+${TESTDIR}/tests/TestedDistributedComputationFramework.o: tests/TestedDistributedComputationFramework.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I. -I/usr/include/mpi -I/usr/include -MMD -MP -MF $@.d -o ${TESTDIR}/tests/TestedDistributedComputationFramework.o tests/TestedDistributedComputationFramework.cpp
 
 
 ${TESTDIR}/tests/RunningVarianceTest.o: tests/RunningVarianceTest.cpp 

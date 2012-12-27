@@ -26,6 +26,12 @@ int main(int argc, char** argv)
     
     // TODO: incorporate command line arguments
     std::string fileIn("montazr11.vc");
+    std::string* fileOut = NULL;
+    
+    // Saver process has file output
+    if (mpiRank == 1) {
+        fileOut = new std::string("montazr11.corel.vc");
+    }
     
     // corel init
     corelComp = new CrossCorrelationComputer();
@@ -34,13 +40,14 @@ int main(int argc, char** argv)
     corelComp->setWindowSize(100);
     corelComp->setSubpartLength(1000);*/
     
+    // TODO: load from config / command line
     corelComp->setTauMax(1000);
     corelComp->setWindowSize(1000);
     corelComp->setStepSize(1000);
     corelComp->setSubpartLength(10000);
     
     // framework init
-    framework = new DistributedComputationFramework(&fileIn, corelComp);
+    framework = new DistributedComputationFramework(&fileIn, fileOut, corelComp);
     framework->open();
     
     // number of blocks

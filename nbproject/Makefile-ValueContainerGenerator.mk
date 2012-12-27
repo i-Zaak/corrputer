@@ -211,7 +211,7 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/CrossC
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/DistributedComputationFrameworkTest.o ${TESTDIR}/tests/DistributedComputationFrameworkTestRunner.o ${OBJECTFILES:%.o=%_nomain.o}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/DistributedComputationFrameworkTest.o ${TESTDIR}/tests/DistributedComputationFrameworkTestRunner.o ${TESTDIR}/tests/TestedDistributedComputationFramework.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
 
@@ -246,6 +246,12 @@ ${TESTDIR}/tests/DistributedComputationFrameworkTestRunner.o: tests/DistributedC
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
 	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${TESTDIR}/tests/DistributedComputationFrameworkTestRunner.o tests/DistributedComputationFrameworkTestRunner.cpp
+
+
+${TESTDIR}/tests/TestedDistributedComputationFramework.o: tests/TestedDistributedComputationFramework.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${TESTDIR}/tests/TestedDistributedComputationFramework.o tests/TestedDistributedComputationFramework.cpp
 
 
 ${TESTDIR}/tests/RunningVarianceTest.o: tests/RunningVarianceTest.cpp 

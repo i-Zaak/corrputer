@@ -4,7 +4,7 @@
 #include "DistributedComputationFramework.h"
 #include "common.h"
 
-DistributedComputationFramework::DistributedComputationFramework(std::string* fileIn, CorrelationComputer* cc) : ComputationFramework(fileIn, NULL, cc) {
+DistributedComputationFramework::DistributedComputationFramework(std::string* fileIn, std::string* fileOut, CorrelationComputer* cc) : ComputationFramework(fileIn, fileOut, cc) {
 }
 
 DistributedComputationFramework::~DistributedComputationFramework() {
@@ -20,7 +20,7 @@ void DistributedComputationFramework::onResultComputed(int index, ValueStream* v
     // create block part
     BlockPart* part = new BlockPart();
     part->index = index;
-    part->values = *vs;
+    part->values = new ValueStream(*vs);
     
     // add it to the list
     this->blockParts.push_back(part);
@@ -39,7 +39,7 @@ void DistributedComputationFramework::exportBlockData(char** buffer, int* size)
     //printf("Exporting parts: %d\n", this->blockParts.size());
     
     // write number of parts
-    int parts = this->blockParts.size();
+    unsigned int parts = this->blockParts.size();
     memcpy(*buffer, &parts, sizeof(int));
     
     // prepare pointer to memory region
@@ -51,7 +51,7 @@ void DistributedComputationFramework::exportBlockData(char** buffer, int* size)
         // copy memory
         int mempos = (sizeof(int) + this->vcOut->getStreamsLength() * sizeof(float)) * i;
         memcpy(&data[mempos], &part->index, sizeof(int));
-        memcpy(&data[mempos + sizeof(int)], &part->values[0], partSize - sizeof(int));
+        memcpy(&data[mempos + sizeof(int)], &(*part->values)[0], partSize - sizeof(int));
     }
     // free every block
     for (unsigned int i = 0; i < parts; i++) {
@@ -71,7 +71,7 @@ void DistributedComputationFramework::importBlockData(char* buffer, int size)
     }
     
     // read number of parts
-    int parts = 0;
+    unsigned int parts = 0;
     memcpy(&parts, buffer, sizeof(int));
     if (parts != (size - sizeof(int)) / partSize) {
         DEBUG_CERR << "Based on buffer size: " << (size - sizeof(int)) / partSize
@@ -82,7 +82,7 @@ void DistributedComputationFramework::importBlockData(char* buffer, int size)
     // prepare pointer to memory region
     char* data = &buffer[sizeof(int)];
     
-    for (int i = 0; i < parts; i++) {
+    for (unsigned int i = 0; i < parts; i++) {
         int mempos = (sizeof(int) + streamLength * sizeof(float)) * i;
         int index;
         memcpy(&index, &data[mempos], sizeof(int));
@@ -92,7 +92,10 @@ void DistributedComputationFramework::importBlockData(char* buffer, int size)
         stream->reserve(streamLength);
         stream->assign(values, values + streamLength);
         this->vcOut->setStream(index, stream);
-        //this->vcOut->saveStream(index, ???);
-        //this->vcOut->freeStream(index);
+        // if we have a file to write to, output and free the memory
+        if (this->fout != NULL) {
+            this->vcOut->saveStream(index, *this->fout);
+            this->vcOut->freeStream(index);
+        } // else: keep the stream in memory
     }
 }

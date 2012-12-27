@@ -6,7 +6,7 @@
 struct BlockPart
 {
     int index;
-    ValueStream values;
+    ValueStream* values;
 };
 
 /**
@@ -16,7 +16,7 @@ struct BlockPart
 class DistributedComputationFramework : public ComputationFramework
 {
 public:
-    DistributedComputationFramework(std::string* fileIn, CorrelationComputer* cc);
+    DistributedComputationFramework(std::string* fileIn, std::string* fileOut, CorrelationComputer* cc);
     virtual ~DistributedComputationFramework();
     
     void exportBlockData(char** buffer, int* size);

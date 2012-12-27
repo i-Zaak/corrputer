@@ -10,6 +10,7 @@
 
 #include "../CrossCorrelationComputer.h"
 #include "../DistributedComputationFramework.h"
+#include "TestedDistributedComputationFramework.h"
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DistributedComputationFrameworkTest);
 
@@ -42,10 +43,10 @@ void DistributedComputationFrameworkTest::testSerialization() {
     corelSave->setSubpartLength(100);
     
     // framework init
-    DistributedComputationFramework* frameworkComp = new DistributedComputationFramework(&fileIn, corelComp);
+    TestedDistributedComputationFramework* frameworkComp = new TestedDistributedComputationFramework(&fileIn, NULL, corelComp);
     frameworkComp->open();
     
-    DistributedComputationFramework* frameworkSave = new DistributedComputationFramework(&fileIn, corelSave);
+    DistributedComputationFramework* frameworkSave = new DistributedComputationFramework(&fileIn, NULL, corelSave);
     frameworkSave->open();
     
     int blocksCount = frameworkComp->getBlocksCount();
@@ -55,6 +56,11 @@ void DistributedComputationFrameworkTest::testSerialization() {
     // temp mem
     char* buffer = NULL;
     int size = 0;
+    
+    // memory for computed results
+    ValueStream** results = new ValueStream*[frameworkComp->getOutputValues()->getStreamsCount()];
+    memset(results, 0, sizeof(results));
+    frameworkComp->setResultsForTesting(results);
     
     // computations
     frameworkComp->setActiveBlock(0);
@@ -78,22 +84,23 @@ void DistributedComputationFrameworkTest::testSerialization() {
     
     // verification
     int index = 0;
-    ValueContainer* vcComp = frameworkComp->getOutputValues();
     ValueContainer* vcSave = frameworkSave->getOutputValues();
-    CPPUNIT_ASSERT_MESSAGE("Computed values cannot be NULL.", vcComp != NULL);
     CPPUNIT_ASSERT_MESSAGE("Saved values cannot be NULL.", vcSave != NULL);
-    for (index = 0; index < vcComp->getStreamsCount(); index++) {
-        printf("Comparing stream %4d/%4d...", index, vcComp->getStreamsCount() - 1);
+    for (index = 0; index < vcSave->getStreamsCount(); index++) {
+        printf("Comparing stream %4d/%4d...", index, vcSave->getStreamsCount() - 1);
         
-        ValueStream* vsComp = vcComp->getStream(index);
+        ValueStream* vsComp = results[index];
         ValueStream* vsSave = vcSave->getStream(index);
-        CPPUNIT_ASSERT_MESSAGE("Computed stream cannot be NULL.", vsComp != NULL);
-        CPPUNIT_ASSERT_MESSAGE("Saved stream cannot be NULL.", vsSave != NULL);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("Inconsistent output sizes.",
-                vsComp->size(), vsSave->size());
-        for (int p = 0; p < vsComp->size(); p++) {
-            CPPUNIT_ASSERT_EQUAL_MESSAGE("Inconsistent output values.",
-                vsComp->at(p), vsSave->at(p));
+        if (vsComp == NULL) {
+            CPPUNIT_ASSERT_MESSAGE("Saved stream must be NULL, inconsistent results.", vsSave == NULL);
+        } else {
+            CPPUNIT_ASSERT_MESSAGE("Saved stream cannot be NULL, inconsistent results.", vsSave != NULL);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("Inconsistent output sizes.",
+                    vsComp->size(), vsSave->size());
+            for (int p = 0; p < vsComp->size(); p++) {
+                CPPUNIT_ASSERT_EQUAL_MESSAGE("Inconsistent output values.",
+                    vsComp->at(p), vsSave->at(p));
+            }
         }
         
         printf("done.\n");
