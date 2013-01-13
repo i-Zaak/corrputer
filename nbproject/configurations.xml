@@ -191,10 +191,11 @@
           <developmentMode>6</developmentMode>
         </cTool>
         <ccTool>
-          <developmentMode>5</developmentMode>
+          <developmentMode>6</developmentMode>
           <architecture>2</architecture>
+          <commandlineTool>mpic++</commandlineTool>
           <preprocessorList>
-            <Elem>MAIN_CORRELATOR</Elem>
+            <Elem>MAIN_CORRELATOR_MPI</Elem>
           </preprocessorList>
         </ccTool>
         <fortranCompilerTool>
@@ -205,6 +206,7 @@
         </asmTool>
         <linkerTool>
           <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release</output>
+          <commandlineTool>mpic++</commandlineTool>
         </linkerTool>
       </compileType>
     </conf>
