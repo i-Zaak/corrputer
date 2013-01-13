@@ -1,0 +1,14 @@
+[Input]
+filename = montazr11.vc
+
+[Output]
+filename = montazr11.corel.vc
+
+[Correlation]
+type = Cross
+tau_max = 10
+window_size = 100
+window_step = 100
+subpart_length = 1000
+
+
