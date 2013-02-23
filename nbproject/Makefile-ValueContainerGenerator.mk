@@ -54,8 +54,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/ValueFrame.o \
 	${OBJECTDIR}/ValueContainerGenerator.o \
 	${OBJECTDIR}/mpi/Worker.o \
-	${OBJECTDIR}/_ext/126195727/ConfigFile.o \
 	${OBJECTDIR}/lib/swutils.o \
+	${OBJECTDIR}/ConfigFile.o \
 	${OBJECTDIR}/ValueContainer.o \
 	${OBJECTDIR}/mpi/Coordinator.o \
 	${OBJECTDIR}/SourcePointInfo.o
@@ -190,15 +190,15 @@ ${OBJECTDIR}/mpi/Worker.o: mpi/Worker.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/Worker.o mpi/Worker.cpp
 
-${OBJECTDIR}/_ext/126195727/ConfigFile.o: ConfigFile.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/126195727
-	${RM} $@.d
-	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/126195727/ConfigFile.o ConfigFile.cpp
-
 ${OBJECTDIR}/lib/swutils.o: lib/swutils.C 
 	${MKDIR} -p ${OBJECTDIR}/lib
 	${RM} $@.d
 	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/lib/swutils.o lib/swutils.C
+
+${OBJECTDIR}/ConfigFile.o: ConfigFile.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/ConfigFile.o ConfigFile.cpp
 
 ${OBJECTDIR}/ValueContainer.o: ValueContainer.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -241,10 +241,10 @@ ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/ValueContainerSerializationTest.o ${TE
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} -lcppunit 
 
 
-${TESTDIR}/_ext/1288231903/ConfigFileTest.o: tests/ConfigFileTest.cpp 
+${TESTDIR}/_ext/1288231903/ConfigFileTest.o: /media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp 
 	${MKDIR} -p ${TESTDIR}/_ext/1288231903
 	${RM} $@.d
-	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/1288231903/ConfigFileTest.o tests/ConfigFileTest.cpp
+	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/1288231903/ConfigFileTest.o /media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp
 
 
 ${TESTDIR}/tests/CrossCorrelationTest.o: tests/CrossCorrelationTest.cpp 
@@ -542,19 +542,6 @@ ${OBJECTDIR}/mpi/Worker_nomain.o: ${OBJECTDIR}/mpi/Worker.o mpi/Worker.cpp
 	    ${CP} ${OBJECTDIR}/mpi/Worker.o ${OBJECTDIR}/mpi/Worker_nomain.o;\
 	fi
 
-${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o: ${OBJECTDIR}/_ext/126195727/ConfigFile.o ConfigFile.cpp 
-	${MKDIR} -p ${OBJECTDIR}/_ext/126195727
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/126195727/ConfigFile.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o ConfigFile.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/_ext/126195727/ConfigFile.o ${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o;\
-	fi
-
 ${OBJECTDIR}/lib/swutils_nomain.o: ${OBJECTDIR}/lib/swutils.o lib/swutils.C 
 	${MKDIR} -p ${OBJECTDIR}/lib
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/lib/swutils.o`; \
@@ -566,6 +553,19 @@ ${OBJECTDIR}/lib/swutils_nomain.o: ${OBJECTDIR}/lib/swutils.o lib/swutils.C
 	    $(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/lib/swutils_nomain.o lib/swutils.C;\
 	else  \
 	    ${CP} ${OBJECTDIR}/lib/swutils.o ${OBJECTDIR}/lib/swutils_nomain.o;\
+	fi
+
+${OBJECTDIR}/ConfigFile_nomain.o: ${OBJECTDIR}/ConfigFile.o ConfigFile.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/ConfigFile.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/ConfigFile_nomain.o ConfigFile.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/ConfigFile.o ${OBJECTDIR}/ConfigFile_nomain.o;\
 	fi
 
 ${OBJECTDIR}/ValueContainer_nomain.o: ${OBJECTDIR}/ValueContainer.o ValueContainer.cpp 
