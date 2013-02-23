@@ -1,4 +1,4 @@
-#include "ConfigFile.h"
+#include "../ConfigFile.h"
 
 #include <iostream>
 #include "../common.h"

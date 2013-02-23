@@ -1,5 +1,5 @@
 #include "CrossCorrelationTest.h"
-#include "CrossCorrelationComputer.h"
+#include "../CrossCorrelationComputer.h"
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CrossCorrelationTest);
@@ -104,3 +104,48 @@ void CrossCorrelationTest::testNormal() {
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Invalid streams length.", 5, (int)vcc->getStreamsLength());
 }
 
+void CrossCorrelationTest::testValues() {
+    ValueStream* streams[2];
+    streams[0] = new ValueStream();
+    streams[0]->push_back(1.0f);
+    streams[0]->push_back(2.0f);
+    streams[0]->push_back(3.0f);
+    streams[0]->push_back(2.0f);
+    streams[0]->push_back(1.0f);
+    streams[1] = new ValueStream();
+    streams[1]->push_back(2.0f);
+    streams[1]->push_back(3.0f);
+    streams[1]->push_back(4.0f);
+    streams[1]->push_back(3.0f);
+    streams[1]->push_back(2.0f);
+    ValueContainer* vc = new ValueContainer(2, streams);
+    
+    CrossCorrelationComputer cc;
+    cc.setData(vc);
+    cc.setWindowSize(3);
+    cc.setStepSize(1);
+    cc.setTauMax(2);
+    cc.init();
+    
+    ValueContainer* vcc = cc.computeAll();
+    
+    for (int t = 0; t < vcc->getStreamsLength(); t++) {
+        for (int y = 0; y < 2; y++) {
+            for (int x = 0; x < 2; x++) {
+                float c;
+                if (x == y) {
+                    c = 1.0f;
+                } else if (x > y) {
+                    ValueStream *stream = vcc->getStream(y + x*2);
+                    c = stream->at(t);
+                } else {
+                    ValueStream *stream = vcc->getStream(x + y*2);
+                    c = stream->at(t);
+                }
+                printf("%f ", c);
+            }
+            printf("\n");
+        }
+        printf("\n");
+    }
+}

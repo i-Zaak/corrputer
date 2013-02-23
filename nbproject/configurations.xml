@@ -47,8 +47,8 @@
       <logicalFolder name="f5" displayName="Utilities" projectFiles="true">
         <itemPath>/media/shared/diplomka/masterserver/ConfigFile.cpp</itemPath>
         <itemPath>/media/shared/diplomka/masterserver/ConfigFile.h</itemPath>
-        <itemPath>Statistics.cpp</itemPath>
-        <itemPath>Statistics.h</itemPath>
+        <itemPath>WindowedStatisticsComputer.cpp</itemPath>
+        <itemPath>WindowedStatisticsComputer.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f3" displayName="ValueContainer" projectFiles="true">
         <itemPath>SourceInfo.cpp</itemPath>

@@ -47,11 +47,11 @@ OBJECTFILES= \
 	${OBJECTDIR}/main_mpi.o \
 	${OBJECTDIR}/mpi/Saver.o \
 	${OBJECTDIR}/CorrelationComputer.o \
+	${OBJECTDIR}/WindowedStatisticsComputer.o \
 	${OBJECTDIR}/DistributedComputationFramework.o \
 	${OBJECTDIR}/FrameContainerGenerator.o \
 	${OBJECTDIR}/mpi/common.o \
 	${OBJECTDIR}/ValueFrame.o \
-	${OBJECTDIR}/Statistics.o \
 	${OBJECTDIR}/ValueContainerGenerator.o \
 	${OBJECTDIR}/mpi/Worker.o \
 	${OBJECTDIR}/_ext/126195727/ConfigFile.o \
@@ -155,6 +155,11 @@ ${OBJECTDIR}/CorrelationComputer.o: CorrelationComputer.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI -MMD -MP -MF $@.d -o ${OBJECTDIR}/CorrelationComputer.o CorrelationComputer.cpp
 
+${OBJECTDIR}/WindowedStatisticsComputer.o: WindowedStatisticsComputer.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI -MMD -MP -MF $@.d -o ${OBJECTDIR}/WindowedStatisticsComputer.o WindowedStatisticsComputer.cpp
+
 ${OBJECTDIR}/DistributedComputationFramework.o: DistributedComputationFramework.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -174,11 +179,6 @@ ${OBJECTDIR}/ValueFrame.o: ValueFrame.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp
-
-${OBJECTDIR}/Statistics.o: Statistics.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI -MMD -MP -MF $@.d -o ${OBJECTDIR}/Statistics.o Statistics.cpp
 
 ${OBJECTDIR}/ValueContainerGenerator.o: ValueContainerGenerator.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -451,6 +451,19 @@ ${OBJECTDIR}/CorrelationComputer_nomain.o: ${OBJECTDIR}/CorrelationComputer.o Co
 	    ${CP} ${OBJECTDIR}/CorrelationComputer.o ${OBJECTDIR}/CorrelationComputer_nomain.o;\
 	fi
 
+${OBJECTDIR}/WindowedStatisticsComputer_nomain.o: ${OBJECTDIR}/WindowedStatisticsComputer.o WindowedStatisticsComputer.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/WindowedStatisticsComputer.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/WindowedStatisticsComputer_nomain.o WindowedStatisticsComputer.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/WindowedStatisticsComputer.o ${OBJECTDIR}/WindowedStatisticsComputer_nomain.o;\
+	fi
+
 ${OBJECTDIR}/DistributedComputationFramework_nomain.o: ${OBJECTDIR}/DistributedComputationFramework.o DistributedComputationFramework.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/DistributedComputationFramework.o`; \
@@ -501,19 +514,6 @@ ${OBJECTDIR}/ValueFrame_nomain.o: ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp
 	    $(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueFrame_nomain.o ValueFrame.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/ValueFrame.o ${OBJECTDIR}/ValueFrame_nomain.o;\
-	fi
-
-${OBJECTDIR}/Statistics_nomain.o: ${OBJECTDIR}/Statistics.o Statistics.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/Statistics.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/Statistics_nomain.o Statistics.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/Statistics.o ${OBJECTDIR}/Statistics_nomain.o;\
 	fi
 
 ${OBJECTDIR}/ValueContainerGenerator_nomain.o: ${OBJECTDIR}/ValueContainerGenerator.o ValueContainerGenerator.cpp 

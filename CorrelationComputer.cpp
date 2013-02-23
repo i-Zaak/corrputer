@@ -151,7 +151,7 @@ void CorrelationComputer::init()
     if (windowStep <= 0) {
         throw std::runtime_error("Invalid window step size configuration: <= 0.");
     }
-    this->outDataLength = (inDataSubpartLength - windowSize) / this->windowStep + 1;
+    this->outDataLength = std::max(0, inDataSubpartLength - windowSize) / this->windowStep + 1;
     
     // perform configuration validation
     if (tauMax < 0) {
@@ -165,6 +165,9 @@ void CorrelationComputer::init()
     }
     if (this->windowSize > inDataLength - tauMax) {
         throw std::runtime_error("Invalid window size: must be smaller than data length - tau max.");
+    }
+    if (this->outDataLength < 0) {
+        throw std::runtime_error("Invalid resulting output data length configuration: < 0.");
     }
 }
 
@@ -252,7 +255,7 @@ ValueStream* CorrelationComputer::computePair(int one, int two)
     for (int pos = start; pos < stop; pos += windowStep) {
         float maxCor = 0.0f;
         // try all the tau values
-        for (int tau = 0; tau < tauMax; tau++) {
+        for (int tau = 0; tau <= tauMax; tau++) {
             float cor = this->computePairValue(one, two, pos, windowSize, tau);
             if (cor > maxCor) {
                 maxCor = cor;

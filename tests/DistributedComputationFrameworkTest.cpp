@@ -6,7 +6,7 @@
  */
 
 #include "DistributedComputationFrameworkTest.h"
-#include "mpi/common.h"
+#include "../mpi/common.h"
 
 #include "../CrossCorrelationComputer.h"
 #include "../DistributedComputationFramework.h"
