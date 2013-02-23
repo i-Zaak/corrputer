@@ -190,10 +190,10 @@ ${OBJECTDIR}/mpi/Worker.o: mpi/Worker.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I/usr/include/mpi -I/usr/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/mpi/Worker.o mpi/Worker.cpp
 
-${OBJECTDIR}/_ext/126195727/ConfigFile.o: /media/shared/diplomka/masterserver/ConfigFile.cpp 
+${OBJECTDIR}/_ext/126195727/ConfigFile.o: ConfigFile.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/126195727
 	${RM} $@.d
-	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I/usr/include/mpi -I/usr/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/126195727/ConfigFile.o /media/shared/diplomka/masterserver/ConfigFile.cpp
+	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I/usr/include/mpi -I/usr/include -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/126195727/ConfigFile.o ConfigFile.cpp
 
 ${OBJECTDIR}/lib/swutils.o: lib/swutils.C 
 	${MKDIR} -p ${OBJECTDIR}/lib
@@ -241,10 +241,10 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/ValueC
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} `pkg-config --libs cppunit`   
 
 
-${TESTDIR}/_ext/1288231903/ConfigFileTest.o: /media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp 
+${TESTDIR}/_ext/1288231903/ConfigFileTest.o: tests/ConfigFileTest.cpp 
 	${MKDIR} -p ${TESTDIR}/_ext/1288231903
 	${RM} $@.d
-	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I. -I/usr/include/mpi -I/usr/include -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/1288231903/ConfigFileTest.o /media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp
+	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I. -I/usr/include/mpi -I/usr/include -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/1288231903/ConfigFileTest.o tests/ConfigFileTest.cpp
 
 
 ${TESTDIR}/tests/CrossCorrelationTest.o: tests/CrossCorrelationTest.cpp 
@@ -542,7 +542,7 @@ ${OBJECTDIR}/mpi/Worker_nomain.o: ${OBJECTDIR}/mpi/Worker.o mpi/Worker.cpp
 	    ${CP} ${OBJECTDIR}/mpi/Worker.o ${OBJECTDIR}/mpi/Worker_nomain.o;\
 	fi
 
-${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o: ${OBJECTDIR}/_ext/126195727/ConfigFile.o /media/shared/diplomka/masterserver/ConfigFile.cpp 
+${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o: ${OBJECTDIR}/_ext/126195727/ConfigFile.o ConfigFile.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/126195727
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/_ext/126195727/ConfigFile.o`; \
 	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
@@ -550,7 +550,7 @@ ${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o: ${OBJECTDIR}/_ext/126195727/Con
 	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
 	then  \
 	    ${RM} $@.d;\
-	    $(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I/usr/include/mpi -I/usr/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o /media/shared/diplomka/masterserver/ConfigFile.cpp;\
+	    $(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I/usr/include/mpi -I/usr/include -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o ConfigFile.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/_ext/126195727/ConfigFile.o ${OBJECTDIR}/_ext/126195727/ConfigFile_nomain.o;\
 	fi

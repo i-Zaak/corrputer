@@ -45,8 +45,8 @@
         <itemPath>mpi/common.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f5" displayName="Utilities" projectFiles="true">
-        <itemPath>/media/shared/diplomka/masterserver/ConfigFile.cpp</itemPath>
-        <itemPath>/media/shared/diplomka/masterserver/ConfigFile.h</itemPath>
+        <itemPath>ConfigFile.cpp</itemPath>
+        <itemPath>ConfigFile.h</itemPath>
         <itemPath>WindowedStatisticsComputer.cpp</itemPath>
         <itemPath>WindowedStatisticsComputer.h</itemPath>
       </logicalFolder>
@@ -77,7 +77,7 @@
                      displayName="ConfigFileTest"
                      projectFiles="true"
                      kind="TEST">
-        <itemPath>/media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp</itemPath>
+        <itemPath>ConfigFileTest.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f3"
                      displayName="CrossCorrelationTest"

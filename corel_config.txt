@@ -1,0 +1,31 @@
+[Input]
+
+filename = montazr11.vc
+
+
+[Output]
+
+filename = montazr11.corel.vc
+
+
+[Correlation]
+
+# Typ korelace, aktualne lze jen "Cross"
+type = Cross
+
+# Maximalni hodnota tau
+tau_max = 10
+
+# Delka plovouciho okna (ve vzorcich)
+window_size = 100
+
+# Delka posunu plovouciho okna (ve vzorcich)
+window_step = 100
+
+# Omezeni zpracovavane oblasti (vse ve vzorcich)
+# Start oblasti
+subpart_start = 100
+# Delka zpracovavane oblasti
+subpart_length = 1000
+# Obe hodnoty jsou volitelne, pokud nejsou uvedeny, zpracuje se cely soubor.
+
