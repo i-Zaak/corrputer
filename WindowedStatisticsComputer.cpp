@@ -30,27 +30,28 @@ void WindowedStatisticsComputer::nextNumber(float value)
     if (n >= windowSize) {
         // remove the oldest element
         float oldM2 = M2History->front();
-        M2 -= oldM2;
         M2History->pop();
+        M2 -= oldM2;
         
         float oldValue = valueHistory->front();
-        sum -= oldValue;
+        sum += value - oldValue;
         valueHistory->pop();
     } else {
         // grow
         n++;
+        sum += value;
     }
     
     valueHistory->push(value);
     
     float delta = value - mean;
-    
-    sum += value;
+
     mean = sum/n;
-    
-    M2 = M2 + delta*(value - mean);
-    M2History->push(M2);
- 
+
+    float M2change = delta*(value - mean);
+    M2 = M2 + M2change;
+    M2History->push(M2change);
+
     variance = M2/(n - 1);
 }
 

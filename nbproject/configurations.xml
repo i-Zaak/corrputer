@@ -77,7 +77,7 @@
                      displayName="ConfigFileTest"
                      projectFiles="true"
                      kind="TEST">
-        <itemPath>ConfigFileTest.cpp</itemPath>
+        <itemPath>tests/ConfigFileTest.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f3"
                      displayName="CrossCorrelationTest"

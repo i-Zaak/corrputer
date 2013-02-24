@@ -22,7 +22,7 @@
  * Simple C++ Test Suite
  */
 void test1() {
-    std::cout << "RunningVarianceTest test 2" << std::endl;
+    std::cout << "RunningVarianceTest test 1" << std::endl;
     
     WindowedStatisticsComputer stats(5);
     stats.nextNumber(1);
@@ -45,7 +45,7 @@ void test1() {
 }
 
 void test2() {
-    std::cout << "RunningVarianceTest test 3" << std::endl;
+    std::cout << "RunningVarianceTest test 2" << std::endl;
     
     WindowedStatisticsComputer stats(2);
     stats.nextNumber(1);
@@ -67,6 +67,32 @@ void test2() {
     }
 }
 
+void test3() {
+    std::cout << "RunningVarianceTest test 3" << std::endl;
+    
+    WindowedStatisticsComputer stats(10);
+    for (int i = 0; i < 1000; i++) {
+        stats.nextNumber(1.00001f);
+        stats.nextNumber(2.00001f);
+        stats.nextNumber(-2.00001f);
+        stats.nextNumber(-1.00001f);
+        stats.nextNumber(0.00001f);
+    }
+    
+    std::cout << "Mean: " << stats.getMean() << std::endl;
+    std::cout << "Variance: " << stats.getVariance() << std::endl;
+    /*
+    float m = stats.getMean();
+    float v = stats.getVariance();
+    if (!IS_EPSILON_EQUAL(m, 1.5f, 0.001f)) {
+        std::cout << "%TEST_FAILED% invalid mean." << std::endl;
+    }
+    if (!IS_EPSILON_EQUAL(v, 0.5f, 0.001f)) {
+        std::cout << "%TEST_FAILED% invalid variance." << std::endl;
+    }
+	*/
+}
+
 int main(int argc, char** argv) {
     std::cout << "%SUITE_STARTING% RunningVarianceTest" << std::endl;
     std::cout << "%SUITE_STARTED%" << std::endl;
@@ -78,6 +104,10 @@ int main(int argc, char** argv) {
     std::cout << "%TEST_STARTED% test2 (RunningVarianceTest)\n" << std::endl;
     test2();
     std::cout << "%TEST_FINISHED% time=0 test2 (RunningVarianceTest)" << std::endl;
+
+    std::cout << "%TEST_STARTED% test3 (RunningVarianceTest)\n" << std::endl;
+    test3();
+    std::cout << "%TEST_FINISHED% time=0 test3 (RunningVarianceTest)" << std::endl;
 
     std::cout << "%SUITE_FINISHED% time=0" << std::endl;
 
