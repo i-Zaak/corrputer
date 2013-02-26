@@ -220,7 +220,7 @@ ${OBJECTDIR}/SourcePointInfo.o: SourcePointInfo.cpp
 
 # Build Test Targets
 .build-tests-conf: .build-conf ${TESTFILES}
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/_ext/1288231903/ConfigFileTest.o ${OBJECTFILES:%.o=%_nomain.o}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/ConfigFileTest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
 
@@ -241,10 +241,10 @@ ${TESTDIR}/TestFiles/f1: ${TESTDIR}/tests/ValueContainerSerializationTest.o ${TE
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f1 $^ ${LDLIBSOPTIONS} -lcppunit 
 
 
-${TESTDIR}/_ext/1288231903/ConfigFileTest.o: /media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp 
-	${MKDIR} -p ${TESTDIR}/_ext/1288231903
+${TESTDIR}/tests/ConfigFileTest.o: tests/ConfigFileTest.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
-	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/1288231903/ConfigFileTest.o /media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp
+	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${TESTDIR}/tests/ConfigFileTest.o tests/ConfigFileTest.cpp
 
 
 ${TESTDIR}/tests/CrossCorrelationTest.o: tests/CrossCorrelationTest.cpp 

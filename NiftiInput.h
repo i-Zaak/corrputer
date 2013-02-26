@@ -9,6 +9,7 @@
 #ifndef NIFTIINPUT_H
 #define	NIFTIINPUT_H
 
+#include "lib/nifti1.h"
 #include "DataInputIface.h"
 #include "ValueContainer.h"
 
@@ -26,8 +27,23 @@ public:
     ValueStream* loadStream(int index);
     
     ValueContainer* load(char* filename);
+    
 private:
-
+    FILE* file;
+    std::string filename;
+    std::string filenamePrefix;
+    int filenameNumberLength;
+    
+    nifti_1_header header;
+    
+    int framesCount;
+    std::vector< FILE* > frameFiles;
+    
+    int voxelCount;
+    int pointSize;
+    int pointDatatype;
+    
+    std::string getFrameFilename(int number);
 };
 
 #endif	/* NIFTIINPUT_H */

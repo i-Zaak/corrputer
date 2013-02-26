@@ -220,7 +220,7 @@ ${OBJECTDIR}/SourcePointInfo.o: SourcePointInfo.cpp
 
 # Build Test Targets
 .build-tests-conf: .build-conf ${TESTFILES}
-${TESTDIR}/TestFiles/f5: ${TESTDIR}/_ext/1288231903/ConfigFileTest.o ${OBJECTFILES:%.o=%_nomain.o}
+${TESTDIR}/TestFiles/f5: ${TESTDIR}/tests/ConfigFileTest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f5 $^ ${LDLIBSOPTIONS} 
 
@@ -241,10 +241,10 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/ValueC
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} `pkg-config --libs cppunit`   
 
 
-${TESTDIR}/_ext/1288231903/ConfigFileTest.o: /media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp 
-	${MKDIR} -p ${TESTDIR}/_ext/1288231903
+${TESTDIR}/tests/ConfigFileTest.o: tests/ConfigFileTest.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
-	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I. -I/usr/include/mpi -I/usr/include -MMD -MP -MF $@.d -o ${TESTDIR}/_ext/1288231903/ConfigFileTest.o /media/shared/diplomka/masterserver/tests/ConfigFileTest.cpp
+	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR_MPI -I. -I/usr/include/mpi -I/usr/include -MMD -MP -MF $@.d -o ${TESTDIR}/tests/ConfigFileTest.o tests/ConfigFileTest.cpp
 
 
 ${TESTDIR}/tests/CrossCorrelationTest.o: tests/CrossCorrelationTest.cpp 
