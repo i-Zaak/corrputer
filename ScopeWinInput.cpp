@@ -57,6 +57,16 @@ void ScopeWinInput::loadHeader(ValueContainer* vc)
     printf("done.\n");
 }
 
+float ScopeWinInput::loadSampleInterval()
+{
+    fseek(this->file, 2146, SEEK_SET);
+    
+    struct FG_s fg;
+    readFG(this->file, &fg);	
+    
+    return fg.XDelta;
+}
+
 ValueStream* ScopeWinInput::loadStream(int index)
 {
     printf("Loading stream %d...", index);
@@ -66,7 +76,7 @@ ValueStream* ScopeWinInput::loadStream(int index)
         throw std::runtime_error("Memory allocation failed!");
     }
     
-    fseek(this->file, 2146 + index*this->hg.Size*sizeof(float), SEEK_SET);
+    fseek(this->file, 2146 + index*(this->hg.Size*sizeof(float) + sizeof(FG_s)-2), SEEK_SET);
     
     struct FG_s fg;
     readFG(this->file, &fg);
@@ -84,6 +94,18 @@ ValueStream* ScopeWinInput::loadStream(int index)
     printf("done.\n");
     
     return stream;
+}
+
+void ScopeWinInput::loadStreamName(int index, char* name)
+{
+    fseek(this->file, 2146 + index*(this->hg.Size*sizeof(float) + sizeof(FG_s)-2), SEEK_SET);
+    
+    struct FG_s fg;
+    readFG(this->file, &fg);
+    //printFG(&fg);
+    
+    //printf("Name %d: %s\n", index, fg.Name);
+    strcpy(name, fg.Name);
 }
 
 ValueContainer* ScopeWinInput::load(char* filename)

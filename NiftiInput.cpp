@@ -177,6 +177,22 @@ ValueStream* NiftiInput::loadStream(int index)
     return vs;
 }
 
+void NiftiInput::loadStreamName(int index, char* name)
+{
+    // generate coordinates name
+    int x, y, z;
+    x = index % header.dim[1];
+    y = (index / header.dim[1]) % header.dim[2];
+    z = ((index / header.dim[1]) / header.dim[2]) % header.dim[3];
+    sprintf(name, "[%d;%d;%d]", x, y, z);
+}
+
+float NiftiInput::loadSampleInterval()
+{
+    // TODO: get it somehow...from somewhere...huh
+    return 0.2f;
+}
+
 ValueContainer* NiftiInput::load(char* filename)
 {
     //

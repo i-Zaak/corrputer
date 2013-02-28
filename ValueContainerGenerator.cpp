@@ -3,14 +3,19 @@
  * 
  * Takes an input file and generates a universal value container used by this
  * project for correlation computations.
+ * It also generates a metadata text file.
  * 
  * @author David Nemecek <dejvino at gmail dot com>
  */
 
 #include <fstream>
+#include <list>
 
 #include "common.h"
+
 #include "DataInputIface.h"
+#include "ConfigFile.h"
+
 #include "ScopeWinInput.h"
 #include "NiftiInput.h"
 
@@ -26,7 +31,7 @@ void printUsage(int argc, char** argv)
             << "Nifti" //<< ", "
             << endl;
     cout << "\t" << "input_file - path to the input file to be converted." << endl;
-    cout << "\t" << "output_file - path to the output file to be generated. It should end with a \".vc\" extension." << endl;
+    cout << "\t" << "output_file - path to the output file to be generated. It should end with a \".vc\" extension. Meta file is generated based on this name." << endl;
 }
 
 /*
@@ -79,8 +84,26 @@ int main(int argc, char** argv)
         vc.setStream(i, NULL);
         delete vs;
     }
-    di->close();
     fout.close();
+    
+    // prepare the metadata output file
+    std::string metaFile(argv[3]);
+    metaFile.append("m");
+    std::ofstream mout(metaFile.c_str(), std::ios::binary);
+    
+    // write metadata
+    mout << "[Source]" << std::endl;
+    mout << "sampleInterval = " << di->loadSampleInterval() << std::endl;
+    mout << "streamsCount = " << vc.getStreamsCount() << std::endl;
+    mout << "streamsLength = " << vc.getStreamsLength() << std::endl;
+    char name[128];
+    for (int i = 0; i < vc.getStreamsCount(); i++) {
+        di->loadStreamName(i, name);
+        mout << "names." << i << " = " << name << std::endl;
+    }
+    mout.close();
+    
+    di->close();
     
     return 0;
 }

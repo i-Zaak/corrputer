@@ -24,6 +24,10 @@ public:
     void loadHeader(ValueContainer* vc);
     ValueStream* loadStream(int index);
     
+    void loadStreamName(int index, char* name);
+    
+    float loadSampleInterval();
+    
     ValueContainer* load(char* filename);
     
 private:
