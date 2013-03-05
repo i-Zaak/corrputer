@@ -51,6 +51,7 @@ int main(int argc, char** argv)
     
     // corel init
     // TODO: type based on config
+    std::string correlType("Cross");
     corelComp = new CrossCorrelationComputer();
     
     corelComp->setTauMax(atoi(config.Value(CONFIG_SECTION_CORRELATION, "tau_max").c_str()));
@@ -81,6 +82,37 @@ int main(int argc, char** argv)
         MPI_COUT << "Window size: " << corelComp->getWindowSize() << std::endl;
         MPI_COUT << "Window step: " << corelComp->getStepSize() << std::endl;
         MPI_COUT << " ------------------------------------------- " << std::endl;
+    }
+    
+    // metadata file create
+    if (mpiRank == 1) {
+        std::string metadataInFilename(fileIn);
+        metadataInFilename.append("m");
+        std::string metadataOutFilename(outputFilename);
+        metadataOutFilename.append("m");
+        
+        // copy original metadata
+        std::ifstream mIn(metadataInFilename.c_str());
+        if (mIn.fail()) {
+            MPI_COUT << "Failed reading metadata file '" << metadataInFilename << "', output metadata file will not be created." << std::endl;
+        } else {
+            std::ofstream mOut(metadataOutFilename.c_str());
+            mOut << mIn.rdbuf();
+            mIn.close();
+
+            // append correlation metadata
+            mOut << std::endl << "[Correlation]" << std::endl;
+            mOut << "type = " << correlType << std::endl;
+            mOut << "streamsCount = " << framework->getOutputValues()->getStreamsCount() << std::endl;
+            mOut << "streamsLength = " << framework->getOutputValues()->getStreamsLength() << std::endl;
+            mOut << "tauMax = " << corelComp->getTauMax() << std::endl;
+            mOut << "windowSize = " << corelComp->getWindowSize() << std::endl;
+            mOut << "windowStep = " << corelComp->getStepSize() << std::endl;
+            mOut << "subpartStart = " << corelComp->getSubpartStart() << std::endl;
+            mOut << "subpartLength = " << corelComp->getSubpartLength() << std::endl;
+
+            mOut.close();
+        }
     }
     
     // assert enough processes
