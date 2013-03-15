@@ -160,6 +160,8 @@ void ValueContainer::saveStream(int index, std::ofstream &fout)
     // seek position
     fout.seekp(VALUECONTAINER_FILE_DATAOFFSET + index * this->streamsLength * sizeof(float), std::ios::beg);
     
+    //printf("Writing %d bytes to position %d of stream %d\n", sizeof(float) * this->streamsLength, VALUECONTAINER_FILE_DATAOFFSET + index * this->streamsLength * sizeof(float), index);
+    
     // write the data block
     float* data = &((*this->streams[index])[0]);
     fout.write((char*)data, sizeof(float) * this->streamsLength);

@@ -19,6 +19,7 @@ CorrelationComputer::CorrelationComputer() {
     this->tauMax = 10;
     this->subpartStart = 0;
     this->subpartLength = 0;
+    this->sampleInterval = 0.0f;
     
     this->inited = 0;
 }
@@ -118,6 +119,23 @@ void CorrelationComputer::setSubpartStart(int subpartStart)
 
 //======================================================================
 
+float CorrelationComputer::getSampleInterval()
+{
+    return sampleInterval;
+}
+
+//======================================================================
+
+void CorrelationComputer::setSampleInterval(float sampleInterval)
+{
+    if (inited != 0) {
+        throw std::runtime_error("Already inited, config change is forbidden.");
+    }
+    this->sampleInterval = sampleInterval;
+}
+
+//======================================================================
+
 void CorrelationComputer::setData(ValueContainer* container)
 {
     if (inited != 0) {
@@ -168,6 +186,9 @@ void CorrelationComputer::init()
     }
     if (this->outDataLength < 0) {
         throw std::runtime_error("Invalid resulting output data length configuration: < 0.");
+    }
+    if (this->sampleInterval <= 0.0f) {
+        throw std::runtime_error("Invalid sample interval value: <= 0.");
     }
 }
 

@@ -39,6 +39,9 @@ public:
 
     int getSubpartStart();
     void setSubpartStart(int subpartStart);
+    
+    float getSampleInterval();
+    void setSampleInterval(float sampleInterval);
 
     //======================================================================
     
@@ -63,6 +66,13 @@ protected:
      */
     virtual void prepareStream(int index);
     
+    /**
+     * Returns whether this instance has already been init()-ed.
+     * 
+     * @return 
+     */
+    bool isInited() { return inited != 0; }
+    
 private:
     ValueContainer* container;
     
@@ -71,6 +81,7 @@ private:
     int tauMax;
     int subpartStart;
     int subpartLength;
+    float sampleInterval;
     
     int inited;
     

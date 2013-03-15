@@ -53,7 +53,15 @@ std::string const& ConfigFile::Value(std::string const& section, std::string con
 
   std::map<std::string, std::string>::const_iterator ci = content_.find(section + '/' + entry);
 
-  if (ci == content_.end()) throw "does not exist";
+  if (ci == content_.end()) {
+      std::string exc("");
+      exc.append("Config entry '");
+      exc.append(entry);
+      exc.append("' in section '");
+      exc.append(section);
+      exc.append("' does not exist.");
+      throw exc.c_str();
+  }
 
   return ci->second;
 }

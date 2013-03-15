@@ -69,7 +69,7 @@ float CrossCorrelationComputer::computePairValue(int one, int two, int start, in
     float varianceOne = chOne->getVariances()->at(stop - 1);
     float varianceTwo = chTwo->getVariances()->at(stop - 1 + tau);
     
-    // compute the result based on the formula
+    // compute the result based on the cross-correlation formula
     // TODO: numerically stable sum is needed
     float sum = 0.0f;
     for (i = start; i < stop; i++) {

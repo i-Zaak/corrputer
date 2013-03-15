@@ -52,6 +52,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/FrameContainerGenerator.o \
 	${OBJECTDIR}/mpi/common.o \
 	${OBJECTDIR}/ValueFrame.o \
+	${OBJECTDIR}/CoherenceCorrelationComputer.o \
 	${OBJECTDIR}/ValueContainerGenerator.o \
 	${OBJECTDIR}/mpi/Worker.o \
 	${OBJECTDIR}/lib/swutils.o \
@@ -67,6 +68,7 @@ TESTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}/tests
 TESTFILES= \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${TESTDIR}/TestFiles/f3 \
+	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${TESTDIR}/TestFiles/f2 \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver
@@ -180,6 +182,11 @@ ${OBJECTDIR}/ValueFrame.o: ValueFrame.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp
 
+${OBJECTDIR}/CoherenceCorrelationComputer.o: CoherenceCorrelationComputer.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/CoherenceCorrelationComputer.o CoherenceCorrelationComputer.cpp
+
 ${OBJECTDIR}/ValueContainerGenerator.o: ValueContainerGenerator.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -232,6 +239,10 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/Distri
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
 
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/FFTtest.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
+	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
+
 ${TESTDIR}/TestFiles/f2: ${TESTDIR}/tests/RunningVarianceTest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f2 $^ ${LDLIBSOPTIONS} 
@@ -275,6 +286,12 @@ ${TESTDIR}/tests/TestedDistributedComputationFramework.o: tests/TestedDistribute
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
 	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${TESTDIR}/tests/TestedDistributedComputationFramework.o tests/TestedDistributedComputationFramework.cpp
+
+
+${TESTDIR}/tests/FFTtest.o: tests/FFTtest.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR -MMD -MP -MF $@.d -o ${TESTDIR}/tests/FFTtest.o tests/FFTtest.cpp
 
 
 ${TESTDIR}/tests/RunningVarianceTest.o: tests/RunningVarianceTest.cpp 
@@ -516,6 +533,19 @@ ${OBJECTDIR}/ValueFrame_nomain.o: ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp
 	    ${CP} ${OBJECTDIR}/ValueFrame.o ${OBJECTDIR}/ValueFrame_nomain.o;\
 	fi
 
+${OBJECTDIR}/CoherenceCorrelationComputer_nomain.o: ${OBJECTDIR}/CoherenceCorrelationComputer.o CoherenceCorrelationComputer.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/CoherenceCorrelationComputer.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -g -Wall -DMAIN_CORRELATOR -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/CoherenceCorrelationComputer_nomain.o CoherenceCorrelationComputer.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/CoherenceCorrelationComputer.o ${OBJECTDIR}/CoherenceCorrelationComputer_nomain.o;\
+	fi
+
 ${OBJECTDIR}/ValueContainerGenerator_nomain.o: ${OBJECTDIR}/ValueContainerGenerator.o ValueContainerGenerator.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/ValueContainerGenerator.o`; \
@@ -613,6 +643,7 @@ ${OBJECTDIR}/SourcePointInfo_nomain.o: ${OBJECTDIR}/SourcePointInfo.o SourcePoin
 	then  \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${TESTDIR}/TestFiles/f3 || true; \
+	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${TESTDIR}/TestFiles/f2 || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \

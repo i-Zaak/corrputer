@@ -17,6 +17,8 @@
         <itemPath>SimpleComputationFramework.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f4" displayName="Correlation" projectFiles="true">
+        <itemPath>CoherenceCorrelationComputer.cpp</itemPath>
+        <itemPath>CoherenceCorrelationComputer.h</itemPath>
         <itemPath>CorrelationComputer.cpp</itemPath>
         <itemPath>CorrelationComputer.h</itemPath>
         <itemPath>CrossCorrelationComputer.cpp</itemPath>
@@ -96,6 +98,9 @@
         <itemPath>tests/DistributedComputationFrameworkTestRunner.cpp</itemPath>
         <itemPath>tests/TestedDistributedComputationFramework.cpp</itemPath>
         <itemPath>tests/TestedDistributedComputationFramework.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f6" displayName="FFTTest" projectFiles="true" kind="TEST">
+        <itemPath>tests/FFTtest.cpp</itemPath>
       </logicalFolder>
       <logicalFolder name="f2"
                      displayName="RunningVarianceTest"
@@ -207,8 +212,30 @@
         <linkerTool>
           <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release</output>
           <commandlineTool>mpic++</commandlineTool>
+          <linkerLibItems>
+            <linkerOptionItem>`pkg-config --libs fftw3`</linkerOptionItem>
+          </linkerLibItems>
         </linkerTool>
       </compileType>
+      <folder path="TestFiles/f6">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f6</output>
+          <linkerLibItems>
+            <linkerOptionItem>`pkg-config --libs fftw3`</linkerOptionItem>
+            <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>
+          </linkerLibItems>
+        </linkerTool>
+      </folder>
     </conf>
     <conf name="ValueContainerGenerator" type="1">
       <toolsSet>
@@ -277,6 +304,9 @@
         <linkerTool>
           <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_debug</output>
           <commandlineTool>mpic++</commandlineTool>
+          <linkerLibItems>
+            <linkerOptionItem>`pkg-config --libs fftw3`</linkerOptionItem>
+          </linkerLibItems>
         </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
@@ -352,6 +382,8 @@
           <output>${TESTDIR}/TestFiles/f5</output>
         </linkerTool>
       </folder>
+      <item path="tests/testrunner.cpp" ex="true" tool="1" flavor2="0">
+      </item>
     </conf>
     <conf name="FrameContainerGenerator" type="1">
       <toolsSet>

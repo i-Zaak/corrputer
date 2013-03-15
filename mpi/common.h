@@ -26,6 +26,7 @@ extern DistributedComputationFramework* framework;
 void mpiPrintIdentifier();
 
 #define MPI_COUT mpiPrintIdentifier(); std::cout
+#define MPI_CERR std::cerr
 #define MPI_PRINTF(...) mpiPrintIdentifier(); printf(__VA_ARGS__)
 
 #endif	/* MPI_COMMON_H */
