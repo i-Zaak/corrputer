@@ -5,6 +5,7 @@
 #include "DistributedComputationFramework.h"
 
 #include "ConfigFile.h"
+#include "CoherenceCorrelationComputer.h"
 
 int mpiRank;
 int mpiSize;
@@ -13,16 +14,20 @@ int blocks;
 CorrelationComputer* corelComp;
 DistributedComputationFramework* framework;
 
+// correlation config file sections
 #define CONFIG_SECTION_INPUT "Input"
 #define CONFIG_SECTION_OUTPUT "Output"
 #define CONFIG_SECTION_CORRELATION "Correlation"
 
+// metadata file sections
+#define META_SECTION_SOURCE "Source"
+
 #ifdef MAIN_CORRELATOR_MPI
 
-/*
- * 
+/**
+ * Main wrapper so we can catch exceptions.
  */
-int main(int argc, char** argv)
+int run(int argc, char** argv)
 {
     // MPI init
     MPI_Init(&argc, &argv);
@@ -43,6 +48,10 @@ int main(int argc, char** argv)
     std::string fileIn(config.Value(CONFIG_SECTION_INPUT, "filename"));
     std::string* fileOut = NULL;
     
+    std::string metadataInFilename(fileIn);
+    metadataInFilename.append("m");
+    ConfigFile configMeta(metadataInFilename);
+    
     // Saver process has file output
     std::string outputFilename = config.Value(CONFIG_SECTION_OUTPUT, "filename");
     if (mpiRank == 1) {
@@ -50,15 +59,33 @@ int main(int argc, char** argv)
     }
     
     // corel init
-    // TODO: type based on config
-    std::string correlType("Cross");
-    corelComp = new CrossCorrelationComputer();
+    std::string correlType(config.Value(CONFIG_SECTION_CORRELATION, "type").c_str());
+    // based on type from the config
+    if (correlType.compare("Cross") == 0) {
+        corelComp = new CrossCorrelationComputer();
+    } else if (correlType.compare("Coherence") == 0) {
+        corelComp = new CoherenceCorrelationComputer();
+    } else {
+        std::cerr << "Unknown correlation type: " << correlType << std::endl;
+        MPI_Finalize();
+        return 2;
+    }
     
+    // common correlation configuration
     corelComp->setTauMax(atoi(config.Value(CONFIG_SECTION_CORRELATION, "tau_max").c_str()));
     corelComp->setWindowSize(atoi(config.Value(CONFIG_SECTION_CORRELATION, "window_size").c_str()));
     corelComp->setStepSize(atoi(config.Value(CONFIG_SECTION_CORRELATION, "window_step").c_str()));
     corelComp->setSubpartStart(atoi(config.Value(CONFIG_SECTION_CORRELATION, "subpart_start", "0").c_str()));
     corelComp->setSubpartLength(atoi(config.Value(CONFIG_SECTION_CORRELATION, "subpart_length", "0").c_str()));
+    
+    corelComp->setSampleInterval(atof(configMeta.Value(META_SECTION_SOURCE, "sampleInterval").c_str()));
+    
+    // type-specific
+    if (correlType.compare("Coherence") == 0) {
+        CoherenceCorrelationComputer* coherenceComp = (CoherenceCorrelationComputer*) corelComp;
+        coherenceComp->setFrequencyRangeBegin(atof(config.Value(CONFIG_SECTION_CORRELATION, "frequency_from", "0").c_str()));
+        coherenceComp->setFrequencyRangeEnd(atof(config.Value(CONFIG_SECTION_CORRELATION, "frequency_to", "0").c_str()));
+    }
     
     // framework init
     framework = new DistributedComputationFramework(&fileIn, fileOut, corelComp);
@@ -86,8 +113,6 @@ int main(int argc, char** argv)
     
     // metadata file create
     if (mpiRank == 1) {
-        std::string metadataInFilename(fileIn);
-        metadataInFilename.append("m");
         std::string metadataOutFilename(outputFilename);
         metadataOutFilename.append("m");
         
@@ -145,5 +170,24 @@ int main(int argc, char** argv)
     
     return 0;
 }
+
+
+int main(int argc, char** argv)
+{
+    try {
+        return run(argc, argv);
+    } catch (char const* text) {
+        MPI_COUT << " !!! Exception !!! " << std::endl;
+        MPI_COUT << text << std::endl;
+        MPI_COUT << " !!! Exception !!! " << std::endl;
+        
+        MPI_CERR << "Exception: " << text << std::endl;
+    }
+    
+    MPI_Finalize();
+    
+    return 666;
+}
+
 #endif
 
