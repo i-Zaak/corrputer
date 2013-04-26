@@ -19,3 +19,8 @@ build/*
 
 # Custom
 run/*
+
+#vi
+*.swp
+*.un~
+*.pyc

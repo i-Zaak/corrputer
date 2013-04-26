@@ -18,6 +18,7 @@
 
 #include "ScopeWinInput.h"
 #include "NiftiInput.h"
+#include "HDF5Input.h"
 
 using namespace std;
 
@@ -25,13 +26,15 @@ using namespace std;
 
 void printUsage(int argc, char** argv)
 {
-    cout << "Usage: " << argv[0] << " input_type input_file output_file" << endl;
+    cout << "Usage: " << argv[0] << " input_type input_file output_file [dataset_path]" << endl;
     cout << "\t" << "input_type - type of input file. Possible values: "
             << "ScopeWin" << ", "
-            << "Nifti" //<< ", "
+            << "Nifti" << ", "
+            << "HDF5" //<< ", "
             << endl;
     cout << "\t" << "input_file - path to the input file to be converted." << endl;
     cout << "\t" << "output_file - path to the output file to be generated. It should end with a \".vc\" extension. Meta file is generated based on this name." << endl;
+	cout << "\t" << "dataset_path - required for the HDF5 format" << endl;
 }
 
 /*
@@ -39,10 +42,17 @@ void printUsage(int argc, char** argv)
  */
 int main(int argc, char** argv)
 {
-    if (argc != 4) {
-        printUsage(argc, argv);
-        return 1;
-    }
+    if (strcmp(argv[1], "HDF5") == 0 ){
+		if(argc != 5) {
+			printUsage(argc, argv);
+			return 1;	
+		}
+    }else if(argc != 4) {
+		printUsage(argc, argv);
+		return 1;
+	}
+
+	
     
     // prepare a DataInputIface instance
     DataInputIface* di;
@@ -50,6 +60,10 @@ int main(int argc, char** argv)
         di = new ScopeWinInput();
     } else if (strcmp(argv[1], "Nifti") == 0) {
         di = new NiftiInput();
+	}else if (strcmp(argv[1], "HDF5") == 0){
+		HDF5Input* h5i = new HDF5Input();
+		h5i->setDataset(argv[4]);		
+		di = h5i;
     } else {
         cout << "Unknown input type: " << argv[1] << endl;
         printUsage(argc, argv);

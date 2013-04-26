@@ -40,6 +40,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/ScopeWinInput.o \
 	${OBJECTDIR}/CrossCorrelationComputer.o \
 	${OBJECTDIR}/NiftiInput.o \
+	${OBJECTDIR}/HDF5Input.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/DataInputIface.o \
 	${OBJECTDIR}/SourceInfo.o \
@@ -87,7 +88,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=
+LDLIBSOPTIONS=-lfftw3 -lhdf5
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
@@ -121,6 +122,11 @@ ${OBJECTDIR}/NiftiInput.o: NiftiInput.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/NiftiInput.o NiftiInput.cpp
+
+${OBJECTDIR}/HDF5Input.o: HDF5Input.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -DMAIN_VALUE_CONTAINER_GENERATOR -MMD -MP -MF $@.d -o ${OBJECTDIR}/HDF5Input.o HDF5Input.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
