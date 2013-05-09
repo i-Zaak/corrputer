@@ -27,11 +27,11 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 PROJECTNAME=masterserver
 
 # Active Configuration
-DEFAULTCONF=Debug
+DEFAULTCONF=Release
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Debug Release ValueContainerGenerator Debug_MPI FrameContainerGenerator 
+ALLCONFS=Release ValueContainerGenerator Debug FrameContainerGenerator 
 
 
 # build

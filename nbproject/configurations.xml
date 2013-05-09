@@ -102,6 +102,12 @@
       <logicalFolder name="f6" displayName="FFTTest" projectFiles="true" kind="TEST">
         <itemPath>tests/FFTtest.cpp</itemPath>
       </logicalFolder>
+      <logicalFolder name="f7"
+                     displayName="RandomVcGen"
+                     projectFiles="true"
+                     kind="TEST">
+        <itemPath>tests/randomvcgen.cpp</itemPath>
+      </logicalFolder>
       <logicalFolder name="f2"
                      displayName="RunningVarianceTest"
                      projectFiles="true"
@@ -126,66 +132,6 @@
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
-    <conf name="Debug" type="1">
-      <toolsSet>
-        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
-        <compilerSet>default</compilerSet>
-      </toolsSet>
-      <compileType>
-        <ccTool>
-          <architecture>2</architecture>
-          <commandLine>-fopenmp</commandLine>
-          <preprocessorList>
-            <Elem>MAIN_CORRELATOR</Elem>
-          </preprocessorList>
-          <warningLevel>2</warningLevel>
-        </ccTool>
-        <linkerTool>
-          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_debug</output>
-          <commandLine>-fopenmp</commandLine>
-        </linkerTool>
-      </compileType>
-      <folder path="TestFiles/f1">
-        <linkerTool>
-          <linkerLibItems>
-            <linkerOptionItem>`pkg-config --libs cppunit`</linkerOptionItem>
-          </linkerLibItems>
-        </linkerTool>
-      </folder>
-      <folder path="TestFiles/f2">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f2</output>
-        </linkerTool>
-      </folder>
-      <folder path="TestFiles/f3">
-        <cTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </cTool>
-        <ccTool>
-          <incDir>
-            <pElem>.</pElem>
-          </incDir>
-        </ccTool>
-        <linkerTool>
-          <output>${TESTDIR}/TestFiles/f3</output>
-          <linkerLibItems>
-            <linkerLibStdlibItem>CppUnit</linkerLibStdlibItem>
-          </linkerLibItems>
-        </linkerTool>
-      </folder>
-    </conf>
     <conf name="Release" type="1">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
@@ -210,7 +156,7 @@
           <developmentMode>5</developmentMode>
         </asmTool>
         <linkerTool>
-          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release</output>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corrputer</output>
           <commandlineTool>mpic++</commandlineTool>
           <linkerLibItems>
             <linkerOptionItem>`pkg-config --libs fftw3`</linkerOptionItem>
@@ -234,6 +180,21 @@
             <linkerOptionItem>`pkg-config --libs fftw3`</linkerOptionItem>
             <linkerLibStdlibItem>Mathematics</linkerLibStdlibItem>
           </linkerLibItems>
+        </linkerTool>
+      </folder>
+      <folder path="TestFiles/f7">
+        <cTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </cTool>
+        <ccTool>
+          <incDir>
+            <pElem>.</pElem>
+          </incDir>
+        </ccTool>
+        <linkerTool>
+          <output>${TESTDIR}/TestFiles/f7</output>
         </linkerTool>
       </folder>
     </conf>
@@ -262,6 +223,9 @@
         <linkerTool>
           <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/vcgen</output>
           <commandlineTool>mpic++</commandlineTool>
+          <linkerLibItems>
+            <linkerOptionItem>`pkg-config --libs fftw3`</linkerOptionItem>
+          </linkerLibItems>
         </linkerTool>
       </compileType>
       <folder path="TestFiles/f1">
@@ -283,7 +247,7 @@
         </linkerTool>
       </folder>
     </conf>
-    <conf name="Debug_MPI" type="1">
+    <conf name="Debug" type="1">
       <toolsSet>
         <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>GNU|GNU</compilerSet>
@@ -302,7 +266,7 @@
           <warningLevel>2</warningLevel>
         </ccTool>
         <linkerTool>
-          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_debug</output>
+          <output>${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corrputer_debug</output>
           <commandlineTool>mpic++</commandlineTool>
           <linkerLibItems>
             <linkerOptionItem>`pkg-config --libs fftw3`</linkerOptionItem>

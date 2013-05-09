@@ -12,10 +12,6 @@
             <sourceRootList/>
             <confList>
                 <confElem>
-                    <name>Debug</name>
-                    <type>1</type>
-                </confElem>
-                <confElem>
                     <name>Release</name>
                     <type>1</type>
                 </confElem>
@@ -24,7 +20,7 @@
                     <type>1</type>
                 </confElem>
                 <confElem>
-                    <name>Debug_MPI</name>
+                    <name>Debug</name>
                     <type>1</type>
                 </confElem>
                 <confElem>

@@ -52,8 +52,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/FrameContainerGenerator.o \
 	${OBJECTDIR}/mpi/common.o \
 	${OBJECTDIR}/ValueFrame.o \
-	${OBJECTDIR}/CoherenceCorrelationComputer.o \
 	${OBJECTDIR}/ValueContainerGenerator.o \
+	${OBJECTDIR}/CoherenceCorrelationComputer.o \
 	${OBJECTDIR}/mpi/Worker.o \
 	${OBJECTDIR}/lib/swutils.o \
 	${OBJECTDIR}/ConfigFile.o \
@@ -70,6 +70,7 @@ TESTFILES= \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${TESTDIR}/TestFiles/f6 \
+	${TESTDIR}/TestFiles/f7 \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver \
 	${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver
 
@@ -91,11 +92,11 @@ LDLIBSOPTIONS=`pkg-config --libs fftw3`
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corrputer
 
-${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release: ${OBJECTFILES}
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corrputer: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	mpic++ -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	mpic++ -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corrputer ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/SimpleComputationFramework.o: SimpleComputationFramework.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -182,15 +183,15 @@ ${OBJECTDIR}/ValueFrame.o: ValueFrame.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI `pkg-config --cflags fftw3`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp
 
-${OBJECTDIR}/CoherenceCorrelationComputer.o: CoherenceCorrelationComputer.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI `pkg-config --cflags fftw3`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/CoherenceCorrelationComputer.o CoherenceCorrelationComputer.cpp
-
 ${OBJECTDIR}/ValueContainerGenerator.o: ValueContainerGenerator.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI `pkg-config --cflags fftw3`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueContainerGenerator.o ValueContainerGenerator.cpp
+
+${OBJECTDIR}/CoherenceCorrelationComputer.o: CoherenceCorrelationComputer.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI `pkg-config --cflags fftw3`    -MMD -MP -MF $@.d -o ${OBJECTDIR}/CoherenceCorrelationComputer.o CoherenceCorrelationComputer.cpp
 
 ${OBJECTDIR}/mpi/Worker.o: mpi/Worker.cpp 
 	${MKDIR} -p ${OBJECTDIR}/mpi
@@ -243,6 +244,10 @@ ${TESTDIR}/TestFiles/f6: ${TESTDIR}/tests/FFTtest.o ${OBJECTFILES:%.o=%_nomain.o
 	${MKDIR} -p ${TESTDIR}/TestFiles
 	${LINK.cc}   -o ${TESTDIR}/TestFiles/f6 $^ ${LDLIBSOPTIONS} `pkg-config --libs fftw3` -lm    
 
+${TESTDIR}/TestFiles/f7: ${TESTDIR}/tests/randomvcgen.o ${OBJECTFILES:%.o=%_nomain.o}
+	${MKDIR} -p ${TESTDIR}/TestFiles
+	${LINK.cc}   -o ${TESTDIR}/TestFiles/f7 $^ ${LDLIBSOPTIONS} 
+
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver: ${TESTDIR}/tests/RunningVarianceTest.o ${OBJECTFILES:%.o=%_nomain.o}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc}   -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver $^ ${LDLIBSOPTIONS} 
@@ -292,6 +297,12 @@ ${TESTDIR}/tests/FFTtest.o: tests/FFTtest.cpp
 	${MKDIR} -p ${TESTDIR}/tests
 	${RM} $@.d
 	$(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI -I. `pkg-config --cflags fftw3`    -MMD -MP -MF $@.d -o ${TESTDIR}/tests/FFTtest.o tests/FFTtest.cpp
+
+
+${TESTDIR}/tests/randomvcgen.o: tests/randomvcgen.cpp 
+	${MKDIR} -p ${TESTDIR}/tests
+	${RM} $@.d
+	$(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI -I. `pkg-config --cflags fftw3`    -MMD -MP -MF $@.d -o ${TESTDIR}/tests/randomvcgen.o tests/randomvcgen.cpp
 
 
 ${TESTDIR}/tests/RunningVarianceTest.o: tests/RunningVarianceTest.cpp 
@@ -533,19 +544,6 @@ ${OBJECTDIR}/ValueFrame_nomain.o: ${OBJECTDIR}/ValueFrame.o ValueFrame.cpp
 	    ${CP} ${OBJECTDIR}/ValueFrame.o ${OBJECTDIR}/ValueFrame_nomain.o;\
 	fi
 
-${OBJECTDIR}/CoherenceCorrelationComputer_nomain.o: ${OBJECTDIR}/CoherenceCorrelationComputer.o CoherenceCorrelationComputer.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	@NMOUTPUT=`${NM} ${OBJECTDIR}/CoherenceCorrelationComputer.o`; \
-	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
-	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
-	then  \
-	    ${RM} $@.d;\
-	    $(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI `pkg-config --cflags fftw3`    -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/CoherenceCorrelationComputer_nomain.o CoherenceCorrelationComputer.cpp;\
-	else  \
-	    ${CP} ${OBJECTDIR}/CoherenceCorrelationComputer.o ${OBJECTDIR}/CoherenceCorrelationComputer_nomain.o;\
-	fi
-
 ${OBJECTDIR}/ValueContainerGenerator_nomain.o: ${OBJECTDIR}/ValueContainerGenerator.o ValueContainerGenerator.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	@NMOUTPUT=`${NM} ${OBJECTDIR}/ValueContainerGenerator.o`; \
@@ -557,6 +555,19 @@ ${OBJECTDIR}/ValueContainerGenerator_nomain.o: ${OBJECTDIR}/ValueContainerGenera
 	    $(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI `pkg-config --cflags fftw3`    -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/ValueContainerGenerator_nomain.o ValueContainerGenerator.cpp;\
 	else  \
 	    ${CP} ${OBJECTDIR}/ValueContainerGenerator.o ${OBJECTDIR}/ValueContainerGenerator_nomain.o;\
+	fi
+
+${OBJECTDIR}/CoherenceCorrelationComputer_nomain.o: ${OBJECTDIR}/CoherenceCorrelationComputer.o CoherenceCorrelationComputer.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	@NMOUTPUT=`${NM} ${OBJECTDIR}/CoherenceCorrelationComputer.o`; \
+	if (echo "$$NMOUTPUT" | ${GREP} '|main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T main$$') || \
+	   (echo "$$NMOUTPUT" | ${GREP} 'T _main$$'); \
+	then  \
+	    ${RM} $@.d;\
+	    $(COMPILE.cc) -O3 -DMAIN_CORRELATOR_MPI `pkg-config --cflags fftw3`    -Dmain=__nomain -MMD -MP -MF $@.d -o ${OBJECTDIR}/CoherenceCorrelationComputer_nomain.o CoherenceCorrelationComputer.cpp;\
+	else  \
+	    ${CP} ${OBJECTDIR}/CoherenceCorrelationComputer.o ${OBJECTDIR}/CoherenceCorrelationComputer_nomain.o;\
 	fi
 
 ${OBJECTDIR}/mpi/Worker_nomain.o: ${OBJECTDIR}/mpi/Worker.o mpi/Worker.cpp 
@@ -645,6 +656,7 @@ ${OBJECTDIR}/SourcePointInfo_nomain.o: ${OBJECTDIR}/SourcePointInfo.o SourcePoin
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${TESTDIR}/TestFiles/f6 || true; \
+	    ${TESTDIR}/TestFiles/f7 || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	    ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver || true; \
 	else  \
@@ -654,7 +666,7 @@ ${OBJECTDIR}/SourcePointInfo_nomain.o: ${OBJECTDIR}/SourcePointInfo.o SourcePoin
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
-	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/masterserver_release
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corrputer
 
 # Subprojects
 .clean-subprojects:
