@@ -89,7 +89,7 @@ FFLAGS=
 ASFLAGS=
 
 # Link Libraries and Options
-LDLIBSOPTIONS=`pkg-config --libs fftw3 hdf5`  
+LDLIBSOPTIONS=`pkg-config --libs fftw3` -lhdf5 
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
