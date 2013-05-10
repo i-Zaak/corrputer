@@ -18,8 +18,9 @@ public:
     
     void setData(ValueContainer* container);
     
-    virtual ValueContainer* computeAll();
-    ValueStream* computePair(int one, int two);
+    //virtual ValueContainer* computeAll();
+    std::vector<ValueStream*>  computePair(int one, int two );
+    int getOutsNumber();
     virtual float computePairValue(int one, int two, int start, int steps, int tau) = 0;
 
     //======================================================================
@@ -88,6 +89,8 @@ private:
     int inDataStart;
     int inDataStop;
     int outDataLength;
+
+    int nOuts;
 };
 
 #endif	/* CORRELATIONCOMPUTER_H */

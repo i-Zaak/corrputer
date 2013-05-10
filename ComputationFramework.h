@@ -16,7 +16,7 @@
  */
 class ComputationFramework {
 public:
-    ComputationFramework(std::string* fileIn, std::string* fileOut, CorrelationComputer* cc);
+    ComputationFramework(std::string* fileIn, std::vector<std::string*> filesOut, CorrelationComputer* cc);
     ComputationFramework(const ComputationFramework& orig);
     virtual ~ComputationFramework();
     
@@ -74,7 +74,7 @@ public:
      * 
      * @return 
      */
-    ValueContainer* getOutputValues();
+    std::vector<ValueContainer*> getOutputValues();
     
 protected:
     // configuration
@@ -83,13 +83,13 @@ protected:
     int blockHeight;
     
     ValueContainer* vcIn;
-    ValueContainer* vcOut;
+    std::vector<ValueContainer*> vcOuts;
     
     std::string* fileIn;
-    std::string* fileOut;
+    std::vector<std::string*> filesOut;
     
     std::ifstream* fin;
-    std::ofstream* fout;
+    std::vector<std::ofstream*> fouts;
     
     CorrelationComputer* corelComp;
     
@@ -105,7 +105,7 @@ protected:
     
     virtual void beforeCompute() {};
     virtual void afterCompute() {};
-    virtual void onResultComputed(int index, ValueStream* vs) {};
+    virtual void onResultComputed(int index, std::vector<ValueStream*> vs) {};
     
     void computeBlock(int blockNum);
     

@@ -6,7 +6,7 @@
 struct BlockPart
 {
     int index;
-    ValueStream* values;
+    std::vector<ValueStream*> values;
 };
 
 /**
@@ -16,13 +16,13 @@ struct BlockPart
 class DistributedComputationFramework : public ComputationFramework
 {
 public:
-    DistributedComputationFramework(std::string* fileIn, std::string* fileOut, CorrelationComputer* cc);
+    DistributedComputationFramework(std::string* fileIn, std::vector<std::string*> filesOut, CorrelationComputer* cc);
     virtual ~DistributedComputationFramework();
     
     void exportBlockData(char** buffer, int* size);
     void importBlockData(char* buffer, int size);
 protected:
-    virtual void onResultComputed(int index, ValueStream* vs);
+    virtual void onResultComputed(int index, std::vector<ValueStream*> vs);
     
 private:
     std::vector<BlockPart*> blockParts;

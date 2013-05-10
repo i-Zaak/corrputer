@@ -1,11 +1,12 @@
 [Input]
 
-filename = montazr11.vc
+filename = /home/izaak/Forge/dejvino/masterserver/data/montazr11.vc
 
 
 [Output]
 
-filename = montazr11.corel.vc
+filename0 = /home/izaak/Forge/dejvino/masterserver/data/montazr11.corel.vc
+filename1 = /home/izaak/Forge/dejvino/masterserver/data/montazr11.tau.vc
 
 
 [Correlation]
@@ -20,12 +21,12 @@ tau_max = 10
 window_size = 100
 
 # Delka posunu plovouciho okna (ve vzorcich)
-window_step = 100
+window_step = 50
 
 # Omezeni zpracovavane oblasti (vse ve vzorcich)
 # Start oblasti
-subpart_start = 100
+#subpart_start = 100
 # Delka zpracovavane oblasti
-subpart_length = 1000
+#subpart_length = 1000
 # Obe hodnoty jsou volitelne, pokud nejsou uvedeny, zpracuje se cely soubor.
 

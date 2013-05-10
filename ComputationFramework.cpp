@@ -1,9 +1,12 @@
 #include "ComputationFramework.h"
 #include "common.h"
+#include "mpi/common.h"
+#include "mpi/api.h"
 
-ComputationFramework::ComputationFramework(std::string* fileIn, std::string* fileOut, CorrelationComputer* cc) {
+ComputationFramework::ComputationFramework(std::string* fileIn, std::vector<std::string*> filesOut, CorrelationComputer* cc) {
     this->fileIn = fileIn;
-    this->fileOut = fileOut;
+    this->filesOut = filesOut;
+    this->fouts = std::vector<std::ofstream*>(filesOut.size());
     this->corelComp = cc;
 }
 
@@ -32,16 +35,20 @@ void ComputationFramework::open()
     }
     
     // prepare a universal data container for data output
-    this->vcOut = new ValueContainer();
-    if (this->fileOut != NULL) {
-        this->fout = new std::ofstream(this->fileOut->c_str());
-        // check result
-        if (!this->fout->good()) {
-            DEBUG_CERR << "File stream is not good! Failed opening output file '" << this->fileOut->c_str() << "'." << std::endl;
-            throw std::runtime_error("Output file stream is not good.");
+    this->vcOuts = std::vector<ValueContainer*>(this->corelComp->getOutsNumber());
+    for(int i=0; i<this->corelComp->getOutsNumber(); i++)
+    {
+        this->vcOuts[i] = new ValueContainer();
+        if (this->filesOut[i] != NULL) {
+            this->fouts[i] = new std::ofstream(this->filesOut[i]->c_str());
+            // check result
+            if (!this->fouts[i]->good()) {
+                DEBUG_CERR << "File stream is not good! Failed opening output file '" << this->filesOut[i]->c_str() << "'." << std::endl;
+                throw std::runtime_error("Output file stream is not good.");
+            }
+        } else {
+            this->fouts[i] = NULL;
         }
-    } else {
-        this->fout = NULL;
     }
     
     // load header
@@ -69,11 +76,15 @@ void ComputationFramework::open()
     this->corelComp->init();
     
     // compute result header and save it
-    this->vcOut->setStreamsCount(this->vcIn->getStreamsCount()*this->vcIn->getStreamsCount());
-    this->vcOut->setStreamsLength(this->corelComp->getOutputLength());
-    if (this->fout != NULL) {
-        this->vcOut->saveHeader(*fout);
+    for(int i=0; i<this->corelComp->getOutsNumber(); i++)
+    {
+        this->vcOuts[i]->setStreamsCount(this->vcIn->getStreamsCount()*this->vcIn->getStreamsCount());
+        this->vcOuts[i]->setStreamsLength(this->corelComp->getOutputLength());
+        if (this->fouts[i] != NULL) {
+            this->vcOuts[i]->saveHeader(*fouts[i]);
+        }
     }
+    
     
     // state init
     this->activeBlock = 0;
@@ -93,11 +104,14 @@ void ComputationFramework::close()
     if (fin != NULL) {
         fin->close();
     }
-    if (fout != NULL) {
-        fout->close();
+    for(int i=0; i<this->corelComp->getOutsNumber(); i++)
+    {
+        if (fouts[i] != NULL) {
+            fouts[i]->close();
+        }
     }
-}
 
+}
 //==========================================================================
 
 int ComputationFramework::getBlocksCount()
@@ -153,9 +167,9 @@ ValueContainer* ComputationFramework::getInputValues()
 
 //==========================================================================
 
-ValueContainer* ComputationFramework::getOutputValues()
+std::vector<ValueContainer*> ComputationFramework::getOutputValues()
 {
-    return this->vcOut;
+    return this->vcOuts;
 }
 
 //==========================================================================
@@ -220,17 +234,20 @@ void ComputationFramework::computeBlock(int blockNum)
             // only half of the matrix is really computed
             continue;
         }
-        ValueStream* vs = corelComp->computePair(one, two);
+        std::vector<ValueStream*> vs = corelComp->computePair(one, two);
 
         // save output
         int resultPos = startPos + y*corelWidth;
         // callback
         this->onResultComputed(resultPos, vs);
-        this->vcOut->setStream(resultPos, vs);
-        if (this->fout != NULL) {
-            this->vcOut->saveStream(resultPos, *fout);
+        for(int i=0; i < this->corelComp->getOutsNumber(); i++)
+        {
+            this->vcOuts[i]->setStream(resultPos, vs[i]);
+            if (this->fouts[i] != NULL) {
+                this->vcOuts[i]->saveStream(resultPos, *fouts[i]);
+            }
+            this->vcOuts[i]->freeStream(resultPos);
         }
-        this->vcOut->freeStream(resultPos);
     }
 
     // free column stream

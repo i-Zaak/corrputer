@@ -22,6 +22,7 @@ CorrelationComputer::CorrelationComputer() {
     this->sampleInterval = 0.0f;
     
     this->inited = 0;
+    this->nOuts = 2; //max corr,  max tau
 }
 
 CorrelationComputer::CorrelationComputer(const CorrelationComputer& orig) {
@@ -207,34 +208,34 @@ int CorrelationComputer::getOutputLength()
 //======================================================================
 //======================================================================
 
-ValueContainer* CorrelationComputer::computeAll()
-{
-    int count = this->container->getStreamsCount();
-
-    std::cout << "Computing correlations for " << count << " streams..." << std::endl;
-    ValueStream** streams = new ValueStream*[count * count];
-
-    int one;
-    for (one = 0; one < count; one++) {
-        for (int two = 0; two < count; two++) {
-            streams[one * count + two] = this->computePair(one, two);
-            //std::cout << "[" << one << " ; " << two << "] Done." << std::endl;
-        }
-        std::cout << "[" << one << " ; " << count << "] Done." << std::endl;
-        // "safety-plug" for large data taking too long while testing
-        // TODO: remove after testing
-        if (count > 1000 && one >= 4) {
-            return NULL;
-        }
-    }
-
-    std::cout << "All correlations computed." << std::endl;
-    return new ValueContainer(count * count, streams);
-}
+//ValueContainer* CorrelationComputer::computeAll()
+//{
+//    int count = this->container->getStreamsCount();
+//
+//    std::cout << "Computing correlations for " << count << " streams..." << std::endl;
+//    ValueStream** streams = new ValueStream*[count * count];
+//
+//    int one;
+//    for (one = 0; one < count; one++) {
+//        for (int two = 0; two < count; two++) {
+//            streams[one * count + two] = this->computePair(one, two);
+//            //std::cout << "[" << one << " ; " << two << "] Done." << std::endl;
+//        }
+//        std::cout << "[" << one << " ; " << count << "] Done." << std::endl;
+//        // "safety-plug" for large data taking too long while testing
+//        // TODO: remove after testing
+//        if (count > 1000 && one >= 4) {
+//            return NULL;
+//        }
+//    }
+//
+//    std::cout << "All correlations computed." << std::endl;
+//    return new ValueContainer(count * count, streams);
+//}
 
 //======================================================================
 
-ValueStream* CorrelationComputer::computePair(int one, int two)
+std::vector<ValueStream*> CorrelationComputer::computePair(int one, int two)
 {
     if (inited != 1) {
         throw std::runtime_error("Init not yet performed.");
@@ -272,21 +273,29 @@ ValueStream* CorrelationComputer::computePair(int one, int two)
      * values and create the resulting correlation value stream.
      */
     ValueStream* vsCorel = new ValueStream();
+    ValueStream* vsTau = new ValueStream();
     vsCorel->reserve(this->getOutputLength());
+    vsTau->reserve(this->getOutputLength());
     for (int pos = start; pos < stop; pos += windowStep) {
         float maxCor = 0.0f;
+        int maxTau = 0;
         // try all the tau values
         for (int tau = 0; tau <= tauMax; tau++) {
             float cor = this->computePairValue(one, two, pos, windowSize, tau);
             if (cor > maxCor) {
                 maxCor = cor;
+                maxTau = tau;
             }
         }
         // save the best value
         vsCorel->push_back(maxCor);
+        vsTau->push_back(maxTau);
     }
-
-    return vsCorel;
+    std::vector<ValueStream*> results;
+    results.push_back(vsCorel);
+    results.push_back(vsTau);
+    return results;
+    
 }
 
 //======================================================================
@@ -294,3 +303,8 @@ ValueStream* CorrelationComputer::computePair(int one, int two)
 void CorrelationComputer::prepareStream(int index)
 {
 }
+
+int CorrelationComputer::getOutsNumber(){
+    return this->nOuts;
+}
+
