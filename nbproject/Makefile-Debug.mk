@@ -15,12 +15,12 @@ NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
 CC=gcc
-CCC=mpic++
-CXX=mpic++
+CCC=scalasca -instrument mpic++
+CXX=scalasca -instrument mpic++
 FC=gfortran
 AS=as
 
-# Macros
+# Macro./dist/Debug/GNU-Linux-x86/corrputer_debugs
 CND_PLATFORM=GNU-Linux-x86
 CND_DLIB_EXT=so
 CND_CONF=Debug
@@ -96,7 +96,7 @@ LDLIBSOPTIONS=`pkg-config --libs fftw3`
 
 ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corrputer_debug: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
-	mpic++ -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corrputer_debug ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	$(CCC) -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/corrputer_debug ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/SimpleComputationFramework.o: SimpleComputationFramework.cpp 
 	${MKDIR} -p ${OBJECTDIR}
