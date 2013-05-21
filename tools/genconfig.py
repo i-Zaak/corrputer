@@ -39,40 +39,38 @@ class CorrputerInputSpec(MpiCommandLineInputSpec):
 
 class CorrputerOutputSpec(TraitedSpec):
     corr_file = File(exists=True, desc="correlation matrix in time")
+    corr_mfile = File(exists=True, desc="correlation matrix in time, metadata")
     tau_file = File(exists=True, desc="time lag matrix in time")
+    tau_mfile = File(exists=True, desc="time lag matrix in timei, metadata")
 
 
 class CorrputerTask(MpiCommandLine):
+    _cmd = 'corrputer'
     input_spec = CorrputerInputSpec
     output_spec = CorrputerOutputSpec
-
-    def __init__(self,command=None,**inputs):
-        if command is None:
-            command = 'corrputer'
-        super(CorrputerTask, self).__init__(command, **inputs)
 
     def _run_interface(self, runtime):
         confile = os.path.abspath('corrconfig.txt')
         generate_config(
                 configpath = confile, 
                 infilename = self.inputs.infile, 
-                outfilename0 = 'corel.vc',
+                outfilename0 = 'correl.vc',
                 outfilename1 = 'tau.vc', 
                 corrtype = self.inputs.corrtype,
                 tau_max = self.inputs.tau_max,
                 win_size = self.inputs.win_size,
                 win_step = self.inputs.win_step)
         self.inputs.args = confile
-        import pdb; pdb.set_trace()
         runtime = super(CorrputerTask, self)._run_interface(runtime)
         return runtime
 
-
-
-
-
-
-
+    def _list_outputs(self):
+        outputs = self.output_spec().get()
+        outputs['corr_file'] = os.path.abspath('correl.vc')
+        outputs['corr_mfile'] = os.path.abspath('correl.vcm')
+        outputs['tau_file'] = os.path.abspath('tau.vc')
+        outputs['tau_mfile'] = os.path.abspath('tau.vcm')
+        return outputs
 
 
 if __name__ == "__main__":
@@ -83,5 +81,7 @@ if __name__ == "__main__":
     corrputer.inputs.tau_max = 10
     corrputer.inputs.win_size = 100
     corrputer.inputs.win_step = 50
-    corrputer.inputs.infile =  os.path.abspath("foo.hd5")
+    corrputer.inputs.infile =  os.path.abspath("/home/izaak/Forge/dejvino/masterserver/data/montazr11.vc")
+    corrputer.inputs.n_procs = 7
+
     corrputer.run()
