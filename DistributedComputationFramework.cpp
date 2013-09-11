@@ -64,10 +64,9 @@ void DistributedComputationFramework::exportBlockData(char** buffer, int* size)
         memcpy(&data[mempos], &part->index, sizeof(int));
         //memcpy(&data[mempos + sizeof(int)], &(*part->values)[0], partSize - sizeof(int));
         mempos += sizeof(int);
-        for(int i=0; i<this->corelComp->getOutsNumber(); i++)
-        {
-            int datalen = this->vcOuts[i]->getStreamsLength() * sizeof(float);
-            memcpy(&data[mempos], &(*part->values[i])[0], datalen);
+        for(int j=0; j<this->corelComp->getOutsNumber(); j++) {
+            int datalen = this->vcOuts[j]->getStreamsLength() * sizeof(float);
+            memcpy(&data[mempos], &(*part->values[j])[0], datalen);
             mempos += datalen;
         }
     }
@@ -115,19 +114,20 @@ void DistributedComputationFramework::importBlockData(char* buffer, int size)
         int index;
         memcpy(&index, &data[mempos], sizeof(int));
         mempos += sizeof(int);
-        for(int i=0; i < this->corelComp->getOutsNumber(); i++)
+        for(int j=0; j < this->corelComp->getOutsNumber(); j++)
         {
             float* values = (float*)&data[mempos];
             // create and insert value stream
             ValueStream* stream = new ValueStream();
-            int streamLength = this->vcOuts[i]->getStreamsLength();
+            int streamLength = this->vcOuts[j]->getStreamsLength();
             stream->reserve(streamLength);
             stream->assign(values, values + streamLength);
-            this->vcOuts[i]->setStream(index, stream);
+			mempos+=streamLength * sizeof(float);
+            this->vcOuts[j]->setStream(index, stream);
             // if we have a file to write to, output and free the memory
-            if (this->fouts[i] != NULL) {
-                this->vcOuts[i]->saveStream(index, *this->fouts[i]);
-                this->vcOuts[i]->freeStream(index);
+            if (this->fouts[j] != NULL) {
+                this->vcOuts[j]->saveStream(index, *this->fouts[j]);
+                this->vcOuts[j]->freeStream(index);
             } // else: keep the stream in memory
         }
     }
