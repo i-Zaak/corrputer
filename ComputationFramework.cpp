@@ -56,7 +56,7 @@ void ComputationFramework::open()
     
     // size of a block
     // TODO: magically guess - based on StreamsLength and available memory
-    this->blockHeight = 50;
+    this->blockHeight = 10;
     this->corelWidth = this->vcIn->getStreamsCount();
     
     // limit block height
