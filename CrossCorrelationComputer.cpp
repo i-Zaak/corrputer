@@ -18,23 +18,23 @@ class ChainedStatistics : public ChainedObject
 public:
     ChainedStatistics() {
         this->means = new ValueStream();
-        this->variances = new ValueStream();
+        this->stDevs = new ValueStream();
     }
     virtual ~ChainedStatistics() {
         delete this->means;
-        delete this->variances;
+        delete this->stDevs;
     }
     
     ValueStream* getMeans() {
         return this->means;
     }
-    ValueStream* getVariances() {
-        return this->variances;
+    ValueStream* getStDevs() {
+        return this->stDevs;
     }
     
 private:
     ValueStream* means;
-    ValueStream* variances;
+    ValueStream* stDevs;
 };
 
 //==========================================================================
@@ -66,22 +66,23 @@ float CrossCorrelationComputer::computePairValue(int one, int two, int start, in
     
     float meanOne = chOne->getMeans()->at(stop - 1);
     float meanTwo = chTwo->getMeans()->at(stop - 1 + tau);
-    float varianceOne = chOne->getVariances()->at(stop - 1);
-    float varianceTwo = chTwo->getVariances()->at(stop - 1 + tau);
+    float stDevOne = chOne->getStDevs()->at(stop - 1);
+    float stDevTwo = chTwo->getStDevs()->at(stop - 1 + tau);
+
     
     // compute the result based on the cross-correlation formula
     // TODO: numerically stable sum is needed
     float sum = 0.0f;
     for (i = start; i < stop; i++) {
-        float a = (vsOne->at(i) - meanOne) / varianceOne;
-        float b = (vsTwo->at(i + tau) - meanTwo) / varianceTwo;
+        float a = (vsOne->at(i) - meanOne) / stDevOne;
+        float b = (vsTwo->at(i + tau) - meanTwo) / stDevTwo;
         sum += a * b;
-        //printf("((%f - %f) / %f) * ((%f - %f) / %f) = %f\n",
-        //        vsOne->at(i), meanOne, varianceOne,
-        //        vsTwo->at(i + tau), meanTwo, varianceTwo,
-        //        a*b);
+        //printf("((%f - %f) / %f) * ((%f - %f) / %f) = %f %f\n",
+        //        vsOne->at(i), meanOne, stDevOne,
+        //        vsTwo->at(i + tau), meanTwo, stDevTwo,
+        //        a*b,sum);
     }
-    //printf("1.0 / %f * %f = \n", steps, sum, (1.0f / steps) * sum);
+    //printf("1.0 / %d * %f = %f\n", steps, sum, (1.0f / steps  * sum));
     return (1.0f / steps) * sum;
 }
 
@@ -113,13 +114,14 @@ void CrossCorrelationComputer::prepareStream(int index)
     
     // resulting streams
     ValueStream* means = chained->getMeans();
-    ValueStream* variances = chained->getVariances();
+    ValueStream* stDevs = chained->getStDevs();
     
     int pos;
     WindowedStatisticsComputer stats(windowSize);
     for (pos = 0; pos < dataLength; pos++) {
         stats.nextNumber(values->at(pos));
         means->push_back(stats.getMean());
-        variances->push_back(stats.getVariance());
+        //stDevs->push_back(stats.getStDev());
+        stDevs->push_back(stats.getStDev());
     }
 }
