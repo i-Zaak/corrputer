@@ -10,6 +10,7 @@
 #include "CorrelationComputer.h"
 #include "common.h"
 #include <algorithm>
+#include <cmath>
 
 CorrelationComputer::CorrelationComputer() {
     this->container = NULL;
@@ -282,12 +283,13 @@ std::vector<ValueStream*> CorrelationComputer::computePair(int one, int two)
         // try all the tau values
         for (int tau = 0; tau <= tauMax; tau++) {
             float cor = this->computePairValue(one, two, pos, windowSize, tau);
-            if (cor > maxCor) {
+            if (std::abs(cor) > std::abs(maxCor)) {
                 maxCor = cor;
                 maxTau = tau;
             }
         }
         // save the best value
+		std::cout << "cor, lag: " << maxCor << ", " << maxTau << std::endl;
         vsCorel->push_back(maxCor);
         vsTau->push_back(maxTau);
     }
