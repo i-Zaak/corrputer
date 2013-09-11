@@ -85,18 +85,30 @@ ValueStream* HDF5Input::loadStream(int index)
     herr_t status;
     hsize_t count[2];
     hsize_t offset[2];
+	hid_t memspace;
+	hsize_t memdim[1];
+	hsize_t memcount[1];
+	hsize_t memoffset[1];
+
     printf("Loading stream %d...", index);
     
+	hid_t datatype = H5Dget_type(this->dataset);
+	hid_t native_type = H5Tget_native_type(datatype, H5T_DIR_ASCEND);
+
+	int* dataint;
+	if(H5Tequal(H5T_NATIVE_INT,native_type)){
+    	int *dataint = (int *) malloc(this->nsamples * sizeof (int));
+    	if (dataint == NULL) {
+    	    throw std::runtime_error("Memory allocation failed!");
+    	}
+	}else if(!H5Tequal(H5T_NATIVE_FLOAT,native_type)){
+		throw std::runtime_error("Data are not float nor int!");
+	}
     float *data = (float *) malloc(this->nsamples * sizeof (float));
     if (data == NULL) {
         throw std::runtime_error("Memory allocation failed!");
     }
 
-    //TODO: condition on the hdf5 data type (could be both float and int)
-    int *dataint = (int *) malloc(this->nsamples * this->nchans *sizeof (int));
-    if (dataint == NULL) {
-        throw std::runtime_error("Memory allocation failed!");
-    }
 
     offset[0] = index;
     offset[1] = 0;
@@ -104,15 +116,30 @@ ValueStream* HDF5Input::loadStream(int index)
     count[0]  = 1;  
     count[1]  = this->nsamples;
 
+	memoffset[0] = 0;
+	memcount[0]  = this->nsamples;
+	memdim[0]    = this->nsamples; 
+
+
     status = H5Sselect_hyperslab(this->dataspace, H5S_SELECT_SET, offset, NULL, count, NULL);
     if (status< 0) {
         throw std::runtime_error("Couldn't select data subspace.");
     }
-    status = H5Dread(this->dataset, H5T_STD_I32LE, H5S_ALL, H5S_ALL, H5P_DEFAULT, dataint);
+	memspace = H5Screate_simple(1, memdim, NULL);
+	status = H5Sselect_hyperslab(memspace, H5S_SELECT_SET, memoffset, NULL, memcount, NULL);
+    if (status< 0) {
+        throw std::runtime_error("Couldn't select memory subspace.");
+    }
+
+	if(H5Tequal(H5T_NATIVE_FLOAT,native_type)){
+    	status = H5Dread(this->dataset, H5T_IEEE_F32LE, memspace, this->dataspace, H5P_DEFAULT, data);
+	}else{
+    	status = H5Dread(this->dataset, H5T_STD_I32LE, memspace, this->dataspace, H5P_DEFAULT, dataint);
+    	std::copy(dataint, dataint + this->nsamples, data);
+	}
     if (status< 0) {
         throw std::runtime_error("Couldn't read data subspace.");
     }
-    std::copy(dataint, dataint + this->nsamples, data);
 
     
     // create a new value stream
@@ -121,7 +148,9 @@ ValueStream* HDF5Input::loadStream(int index)
     stream->assign(data, data + this->nsamples);
     
     delete data;
-    delete dataint;
+	if(H5Tequal(H5T_NATIVE_INT,native_type)){
+		delete dataint;
+	}
     
     printf("done.\n");
     
