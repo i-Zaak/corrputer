@@ -42,12 +42,8 @@ void printUsage(int argc, char** argv)
  */
 int main(int argc, char** argv)
 {
-    if (strcmp(argv[1], "HDF5") == 0 ){
-		if(argc != 5) {
-			printUsage(argc, argv);
-			return 1;	
-		}
-    }else if(argc != 4) {
+	if(argc != 4 && argc != 5) {
+
 		printUsage(argc, argv);
 		return 1;
 	}
