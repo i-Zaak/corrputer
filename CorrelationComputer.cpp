@@ -171,7 +171,9 @@ void CorrelationComputer::init()
     if (windowStep <= 0) {
         throw std::runtime_error("Invalid window step size configuration: <= 0.");
     }
-    this->outDataLength = std::max(0, inDataSubpartLength - windowSize) / this->windowStep + 1;
+    //WOOOT?
+	//this->outDataLength = std::max(0, inDataSubpartLength - windowSize) / this->windowStep + 1;
+	this->outDataLength = std::max(0, inDataSubpartLength) / this->windowStep + 1;
     
     // perform configuration validation
     if (tauMax < 0) {
@@ -289,7 +291,6 @@ std::vector<ValueStream*> CorrelationComputer::computePair(int one, int two)
             }
         }
         // save the best value
-		std::cout << "cor, lag: " << maxCor << ", " << maxTau << std::endl;
         vsCorel->push_back(maxCor);
         vsTau->push_back(maxTau);
     }
