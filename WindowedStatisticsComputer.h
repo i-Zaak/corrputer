@@ -11,6 +11,7 @@ public:
     void nextNumber(float value);
     float getMean();
     float getVariance();
+    float getStDev();
     
 private:
     int windowSize;

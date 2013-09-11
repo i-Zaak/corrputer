@@ -6,6 +6,7 @@
  */
 
 #include "WindowedStatisticsComputer.h"
+#include <math.h>
 
 WindowedStatisticsComputer::WindowedStatisticsComputer(int windowSize) {
     this->windowSize = windowSize;
@@ -63,4 +64,9 @@ float WindowedStatisticsComputer::getMean()
 float WindowedStatisticsComputer::getVariance()
 {
     return this->variance;
+}
+
+float WindowedStatisticsComputer::getStDev()
+{
+    return sqrt(this->variance);
 }
