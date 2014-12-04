@@ -117,6 +117,8 @@ int run(int argc, char** argv)
             MPI_COUT << "\t"<< framework->getOutputValues()[i]->getStreamsLength() << " " << std::endl;
         }
         MPI_COUT << "Tau max: " << corelComp->getTauMax() << std::endl;
+        MPI_COUT << "Subpart start: " << corelComp->getSubpartStart() << std::endl;
+        MPI_COUT << "Subpart length: " << corelComp->getSubpartLength() << std::endl;
         MPI_COUT << "Window size: " << corelComp->getWindowSize() << std::endl;
         MPI_COUT << "Window step: " << corelComp->getStepSize() << std::endl;
         MPI_COUT << " ------------------------------------------- " << std::endl;

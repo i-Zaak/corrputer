@@ -110,7 +110,30 @@ class VCGenTask(CommandLine):
         outputs['metafile'] = os.path.abspath(self.inputs.output_file + 'm')
         return outputs
 
+"""
+    VCtoH5 interface
+"""
 
+class VCtoH5InputSpec(BaseInterfaceInputSpec):
+    infile = File(exists=True, desc='vc file ', mandatory=True)
+    data_path = Directory(exists=True, mandatory=True)
+    instring = Str('FILL', desc='' mandatory=True, usedefault=True)
+
+class VCtoH5OutputSpec(TraitedSpec):
+    outfile = File(exists=True, desc='FILL')
+
+class VCtoH5(BaseInterface):
+    input_spec = VCtoH5InputSpec
+    output_spec = VCtoH5OutputSpec 
+
+def _run_interface(self, runtime):
+    #TODO do stuff
+    return runtime
+
+def _list_outputs(self):
+    outputs = self._outputs().get()
+    outputs["outfile"] = os.path.abspath('FILL')
+    return outputs
 
 if __name__ == "__main__":
     ## generate config only
